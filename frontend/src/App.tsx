@@ -4,10 +4,10 @@ import { Header } from './components/Header'
 import { HomePage } from './pages/HomePage'
 import { CreatePage } from './pages/CreatePage'
 import { GalleryPage } from './pages/GalleryPage'
-import type { PostcardTemplate, PostcardDesign, Postcard } from './types'
+import type { PostcardTemplate, PostcardDesign } from './types'
 import './App.css'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+const API_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:8000'
 
 type Page = 'home' | 'create' | 'gallery'
 
@@ -104,7 +104,7 @@ function App() {
       <footer className="border-t border-cream-200 py-8 px-4 mt-16">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-cream-500 text-sm">
-            Made with 💌 using the warm "Nature Distilled" palette
+            Made with 💌 using the warm &quot;Nature Distilled&quot; palette
           </p>
         </div>
       </footer>

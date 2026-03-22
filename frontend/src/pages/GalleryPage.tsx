@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { Card, CardContent } from '../components/ui/Card'
 import { Button } from '../components/ui/Button'
 import type { Postcard } from '../types'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+const API_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:8000'
 
 interface GalleryPageProps {
   onEdit?: (postcard: Postcard) => void

@@ -12,7 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from database import get_db, init_db
-from models import User, Template, Postcard, Recipient, PostcardStatus
+from models import User, Template, Postcard, Recipient, PostcardStatus, ReferenceImage, ReferenceImageType
 from schemas import (
     HealthResponse,
     TemplateResponse,
@@ -26,17 +26,25 @@ from schemas import (
     RecipientCreate,
     RecipientUpdate,
     ErrorResponse,
+    ReferenceImageCreate,
+    ReferenceImageResponse,
+    ReferenceImageList,
 )
 
 # ============== Configuration ==============
 
 UPLOAD_DIR = Path(os.getenv("UPLOAD_DIR", "/app/uploads"))
+REFERENCE_UPLOAD_DIR = Path(os.getenv("REFERENCE_UPLOAD_DIR", "/app/uploads/references"))
 MAX_FILE_SIZE = 5 * 1024 * 1024  # 5MB
+MAX_REFERENCE_FILE_SIZE = 10 * 1024 * 1024  # 10MB
 ALLOWED_CONTENT_TYPES = {"image/png", "image/jpeg", "image/jpg"}
 ALLOWED_EXTENSIONS = {".png", ".jpg", ".jpeg"}
+REFERENCE_ALLOWED_CONTENT_TYPES = {"image/png", "image/jpeg", "image/jpg", "image/webp"}
+REFERENCE_ALLOWED_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp"}
 
-# Ensure upload directory exists
+# Ensure upload directories exist
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+REFERENCE_UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 # ============== FastAPI App ==============
 
@@ -455,6 +463,168 @@ async def upload_image(
         content_type=file.content_type,
         size=len(content),
     )
+
+
+# ============== Reference Image Endpoints ==============
+
+@app.post("/postcards/{postcard_id}/references", response_model=ReferenceImageResponse, status_code=status.HTTP_201_CREATED, tags=["Reference Images"])
+async def upload_reference_image(
+    postcard_id: uuid.UUID,
+    image_type: str = Query(..., description="Type of reference image: character, scene, event, or style"),
+    description: Optional[str] = Query(None, description="Optional description of the reference image"),
+    file: UploadFile = File(...),
+    db: AsyncSession = Depends(get_db),
+):
+    """Upload a reference image for a postcard."""
+    # Validate image type
+    if image_type not in ["character", "scene", "event", "style"]:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Invalid image_type. Allowed values: character, scene, event, style",
+        )
+    
+    # Check if postcard exists
+    result = await db.execute(
+        select(Postcard).where(Postcard.id == postcard_id)
+    )
+    postcard = result.scalar_one_or_none()
+    
+    if not postcard:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Postcard with ID {postcard_id} not found",
+        )
+    
+    # Validate content type
+    if file.content_type not in REFERENCE_ALLOWED_CONTENT_TYPES:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Invalid file type. Allowed types: {', '.join(REFERENCE_ALLOWED_CONTENT_TYPES)}",
+        )
+    
+    # Validate file extension
+    file_ext = get_file_extension(file.filename)
+    if file_ext not in REFERENCE_ALLOWED_EXTENSIONS:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Invalid file extension. Allowed: {', '.join(REFERENCE_ALLOWED_EXTENSIONS)}",
+        )
+    
+    # Read file content
+    content = await file.read()
+    
+    # Validate file size
+    if len(content) > MAX_REFERENCE_FILE_SIZE:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"File too large. Maximum size: {MAX_REFERENCE_FILE_SIZE / (1024 * 1024):.1f}MB",
+        )
+    
+    # Generate unique filename
+    unique_filename = f"{uuid.uuid4()}{file_ext}"
+    file_path = REFERENCE_UPLOAD_DIR / unique_filename
+    
+    # Save file
+    try:
+        with open(file_path, "wb") as f:
+            f.write(content)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to save file: {str(e)}",
+        )
+    
+    # Create database record
+    reference_image = ReferenceImage(
+        postcard_id=postcard_id,
+        image_path=str(file_path),
+        image_type=ReferenceImageType(image_type),
+        description=description,
+    )
+    db.add(reference_image)
+    await db.commit()
+    await db.refresh(reference_image)
+    
+    return reference_image
+
+
+@app.get("/postcards/{postcard_id}/references", response_model=ReferenceImageList, tags=["Reference Images"])
+async def list_reference_images(
+    postcard_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+):
+    """List all reference images for a postcard."""
+    # Check if postcard exists
+    result = await db.execute(
+        select(Postcard).where(Postcard.id == postcard_id)
+    )
+    postcard = result.scalar_one_or_none()
+    
+    if not postcard:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Postcard with ID {postcard_id} not found",
+        )
+    
+    # Get reference images
+    result = await db.execute(
+        select(ReferenceImage).where(ReferenceImage.postcard_id == postcard_id)
+    )
+    reference_images = result.scalars().all()
+    
+    return ReferenceImageList(reference_images=reference_images, total=len(reference_images))
+
+
+@app.get("/references/{reference_id}", response_model=ReferenceImageResponse, tags=["Reference Images"])
+async def get_reference_image(
+    reference_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+):
+    """Get a single reference image by ID."""
+    result = await db.execute(
+        select(ReferenceImage).where(ReferenceImage.id == reference_id)
+    )
+    reference_image = result.scalar_one_or_none()
+    
+    if not reference_image:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Reference image with ID {reference_id} not found",
+        )
+    
+    return reference_image
+
+
+@app.delete("/references/{reference_id}", status_code=status.HTTP_204_NO_CONTENT, tags=["Reference Images"])
+async def delete_reference_image(
+    reference_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+):
+    """Delete a reference image."""
+    result = await db.execute(
+        select(ReferenceImage).where(ReferenceImage.id == reference_id)
+    )
+    reference_image = result.scalar_one_or_none()
+    
+    if not reference_image:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Reference image with ID {reference_id} not found",
+        )
+    
+    # Delete the file from disk
+    try:
+        file_path = Path(reference_image.image_path)
+        if file_path.exists():
+            file_path.unlink()
+    except Exception as e:
+        # Log error but continue with database deletion
+        print(f"Warning: Failed to delete file {reference_image.image_path}: {e}")
+    
+    await db.delete(reference_image)
+    await db.commit()
+    
+    return None
 
 
 # ============== Main Entry Point ==============

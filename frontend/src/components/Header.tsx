@@ -1,8 +1,6 @@
-import React from 'react'
-
 interface HeaderProps {
-  onNavigate?: (page: string) => void
-  currentPage?: string
+  onNavigate?: (page: 'home' | 'create' | 'gallery') => void
+  currentPage?: 'home' | 'create' | 'gallery'
 }
 
 export function Header({ onNavigate, currentPage = 'home' }: HeaderProps) {
@@ -34,7 +32,7 @@ export function Header({ onNavigate, currentPage = 'home' }: HeaderProps) {
             ].map((item) => (
               <button
                 key={item.id}
-                onClick={() => onNavigate?.(item.id)}
+                onClick={() => onNavigate?.(item.id as 'home' | 'create' | 'gallery')}
                 className={`
                   px-4 py-2 rounded-lg text-sm font-medium transition-colors
                   ${currentPage === item.id

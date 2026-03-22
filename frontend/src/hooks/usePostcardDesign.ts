@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import type { PostcardDesign } from '../types'
+import type { PostcardDesign, ReferenceImage, ReferenceImageType } from '../types'
 import { DEFAULT_DESIGN } from '../utils/constants'
 
 export function usePostcardDesign(initialDesign: Partial<PostcardDesign> = {}) {
@@ -44,6 +44,35 @@ export function usePostcardDesign(initialDesign: Partial<PostcardDesign> = {}) {
     }))
   }, [])
 
+  const addReference = useCallback((reference: Omit<ReferenceImage, 'id' | 'createdAt'>) => {
+    const newReference: ReferenceImage = {
+      ...reference,
+      id: `ref_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      createdAt: new Date().toISOString(),
+    }
+    setDesign(prev => ({
+      ...prev,
+      referenceImages: [...prev.referenceImages, newReference],
+    }))
+    return newReference.id
+  }, [])
+
+  const removeReference = useCallback((id: string) => {
+    setDesign(prev => ({
+      ...prev,
+      referenceImages: prev.referenceImages.filter(ref => ref.id !== id),
+    }))
+  }, [])
+
+  const updateReferenceType = useCallback((id: string, type: ReferenceImageType) => {
+    setDesign(prev => ({
+      ...prev,
+      referenceImages: prev.referenceImages.map(ref =>
+        ref.id === id ? { ...ref, type } : ref
+      ),
+    }))
+  }, [])
+
   const resetDesign = useCallback(() => {
     setDesign(DEFAULT_DESIGN)
   }, [])
@@ -63,6 +92,9 @@ export function usePostcardDesign(initialDesign: Partial<PostcardDesign> = {}) {
     updateFontFamily,
     updateTheme,
     applyTemplate,
+    addReference,
+    removeReference,
+    updateReferenceType,
     resetDesign,
     exportDesign,
   }

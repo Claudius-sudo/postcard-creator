@@ -131,6 +131,34 @@ class PostcardSendResponse(BaseSchema):
     message: str
 
 
+# ============== Reference Image Schemas ==============
+
+class ReferenceImageType:
+    CHARACTER = "character"
+    SCENE = "scene"
+    EVENT = "event"
+    STYLE = "style"
+
+
+class ReferenceImageCreate(BaseSchema):
+    image_type: str = Field(..., pattern="^(character|scene|event|style)$")
+    description: Optional[str] = None
+
+
+class ReferenceImageResponse(BaseSchema):
+    id: UUID
+    postcard_id: UUID
+    image_path: str
+    image_type: str
+    description: Optional[str] = None
+    created_at: datetime
+
+
+class ReferenceImageList(BaseSchema):
+    reference_images: List[ReferenceImageResponse]
+    total: int
+
+
 # ============== Upload Schemas ==============
 
 class UploadResponse(BaseSchema):

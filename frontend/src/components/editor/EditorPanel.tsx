@@ -1,10 +1,10 @@
-import React from 'react'
+import { useState } from 'react'
 import { Input } from '../ui/Input'
 import { TextArea } from '../ui/TextArea'
 import { Select } from '../ui/Select'
 import { ImageUpload } from './ImageUpload'
 import { TemplateGallery } from '../templates/TemplateGallery'
-import { FONT_OPTIONS, THEME_OPTIONS, POSTCARD_TEMPLATES } from '../../utils/constants'
+import { FONT_OPTIONS, THEME_OPTIONS } from '../../utils/constants'
 import type { PostcardDesign, PostcardTemplate } from '../../types'
 
 interface EditorPanelProps {
@@ -26,7 +26,7 @@ export function EditorPanel({
   onUpdateTheme,
   onApplyTemplate,
 }: EditorPanelProps) {
-  const [activeTab, setActiveTab] = React.useState<'content' | 'style' | 'templates'>('content')
+  const [activeTab, setActiveTab] = useState<'content' | 'style' | 'templates'>('content')
 
   const handleTemplateSelect = (template: PostcardTemplate) => {
     onApplyTemplate(template)

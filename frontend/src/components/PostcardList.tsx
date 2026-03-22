@@ -1,4 +1,11 @@
-import type { Postcard } from '../App'
+interface Postcard {
+  id: number
+  title: string
+  message?: string
+  image_path?: string
+  recipient_email?: string
+  created_at: string
+}
 
 interface PostcardListProps {
   postcards: Postcard[]

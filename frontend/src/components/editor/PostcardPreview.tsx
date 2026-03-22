@@ -1,4 +1,4 @@
-import React from 'react'
+
 import type { PostcardDesign } from '../../types'
 
 interface PostcardPreviewProps {

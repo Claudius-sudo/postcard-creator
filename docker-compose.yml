@@ -10,7 +10,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postcard_password}
       POSTGRES_DB: ${POSTGRES_DB:-postcard_db}
     ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      - "127.0.0.1:5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./database/init:/docker-entrypoint-initdb.d:ro
@@ -34,7 +34,7 @@ services:
       - SECRET_KEY=${SECRET_KEY:-dev-secret-key}
       - UPLOAD_DIR=${UPLOAD_DIR:-/app/uploads}
     ports:
-      - "${BACKEND_PORT:-8000}:8000"
+      - "100.76.223.66:8000:8000"
     volumes:
       - ./backend:/app
       - uploads_data:/app/uploads
@@ -54,7 +54,7 @@ services:
     environment:
       - VITE_API_URL=${VITE_API_URL:-http://localhost:8000}
     ports:
-      - "5173:5173"
+      - "100.76.223.66:5173:5173"
     volumes:
       - ./frontend:/app
       - /app/node_modules

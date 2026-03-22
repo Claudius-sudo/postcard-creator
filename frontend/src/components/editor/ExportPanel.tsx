@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import type { PostcardDesign } from '../../types'
 
 interface ExportPanelProps {
@@ -9,12 +9,12 @@ export function ExportPanel({ design }: ExportPanelProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [isExporting, setIsExporting] = useState(false)
 
-  const generateImage = async (): Promise<string | null> => {
+  const generateImage = async (): Promise<string> => {
     const canvas = canvasRef.current
-    if (!canvas) return null
+    if (!canvas) throw new Error('Canvas not available')
 
     const ctx = canvas.getContext('2d')
-    if (!ctx) return null
+    if (!ctx) throw new Error('Canvas context not available')
 
     // Set canvas size (postcard ratio 4:3 at high resolution)
     const width = 1200
@@ -43,7 +43,7 @@ export function ExportPanel({ design }: ExportPanelProps) {
       const img = new Image()
       img.crossOrigin = 'anonymous'
       
-      await new Promise<void>((resolve) => {
+      await new Promise<void>((resolve, reject) => {
         img.onload = () => {
           const imgHeight = height * 0.55
           const imgY = 60
@@ -59,7 +59,8 @@ export function ExportPanel({ design }: ExportPanelProps) {
           ctx.restore()
           resolve()
         }
-        img.src = design.image
+        img.onerror = reject
+        img.src = design.image!
       })
     } else {
       // Draw placeholder
@@ -123,12 +124,10 @@ export function ExportPanel({ design }: ExportPanelProps) {
     setIsExporting(true)
     try {
       const dataUrl = await generateImage()
-      if (dataUrl) {
-        const link = document.createElement('a')
-        link.download = `postcard-${Date.now()}.png`
-        link.href = dataUrl
-        link.click()
-      }
+      const link = document.createElement('a')
+      link.download = `postcard-${Date.now()}.png`
+      link.href = dataUrl
+      link.click()
     } catch (error) {
       console.error('Export failed:', error)
       alert('Failed to export postcard. Please try again.')
@@ -141,7 +140,7 @@ export function ExportPanel({ design }: ExportPanelProps) {
     setIsExporting(true)
     try {
       const dataUrl = await generateImage()
-      if (dataUrl && navigator.share) {
+      if (navigator.share) {
         const response = await fetch(dataUrl)
         const blob = await response.blob()
         const file = new File([blob], 'postcard.png', { type: 'image/png' })

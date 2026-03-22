@@ -1,11 +1,9 @@
-import React from 'react'
 import { Hero } from '../components/Hero'
 import { TemplateGallery } from '../components/templates/TemplateGallery'
-import { POSTCARD_TEMPLATES } from '../utils/constants'
 import type { PostcardTemplate } from '../types'
 
 interface HomePageProps {
-  onNavigate: (page: string) => void
+  onNavigate: (page: 'home' | 'create' | 'gallery') => void
   onSelectTemplate: (template: PostcardTemplate) => void
 }
 

@@ -15,6 +15,13 @@ class PostcardStatus(str, PyEnum):
     SENT = "sent"
 
 
+class ReferenceImageType(str, PyEnum):
+    CHARACTER = "character"
+    SCENE = "scene"
+    EVENT = "event"
+    STYLE = "style"
+
+
 class User(Base):
     __tablename__ = "users"
 
@@ -57,6 +64,7 @@ class Postcard(Base):
     user = relationship("User", back_populates="postcards")
     template = relationship("Template", back_populates="postcards")
     recipient = relationship("Recipient", back_populates="postcard", uselist=False, cascade="all, delete-orphan")
+    reference_images = relationship("ReferenceImage", back_populates="postcard", cascade="all, delete-orphan")
 
 
 class Recipient(Base):
@@ -74,3 +82,17 @@ class Recipient(Base):
 
     # Relationships
     postcard = relationship("Postcard", back_populates="recipient")
+
+
+class ReferenceImage(Base):
+    __tablename__ = "reference_images"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    postcard_id = Column(UUID(as_uuid=True), ForeignKey("postcards.id", ondelete="CASCADE"), nullable=False, index=True)
+    image_path = Column(String(500), nullable=False)
+    image_type = Column(SQLEnum(ReferenceImageType), nullable=False)
+    description = Column(Text, nullable=True)
+    created_at = Column(DateTime(timezone=True), default=datetime.utcnow, nullable=False)
+
+    # Relationships
+    postcard = relationship("Postcard", back_populates="reference_images")

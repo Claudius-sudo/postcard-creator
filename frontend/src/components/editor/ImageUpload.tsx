@@ -1,4 +1,4 @@
-import React from 'react'
+
 import { useImageUpload } from '../../hooks/useImageUpload'
 
 interface ImageUploadProps {

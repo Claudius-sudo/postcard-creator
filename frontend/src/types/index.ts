@@ -1,3 +1,14 @@
+export type ReferenceImageType = 'character' | 'scene' | 'event' | 'style'
+
+export interface ReferenceImage {
+  id: string
+  url: string
+  file: File | null
+  type: ReferenceImageType
+  name: string
+  createdAt: string
+}
+
 export interface Postcard {
   id: number
   title: string
@@ -9,6 +20,7 @@ export interface Postcard {
   theme?: string
   background_color?: string
   text_color?: string
+  reference_images?: ReferenceImage[]
 }
 
 export interface PostcardTemplate {
@@ -32,6 +44,7 @@ export interface PostcardDesign {
   textColor: string
   accentColor: string
   templateId: string | null
+  referenceImages: ReferenceImage[]
 }
 
 export type FontOption = {

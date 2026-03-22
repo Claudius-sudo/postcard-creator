@@ -125,4 +125,5 @@ export const DEFAULT_DESIGN = {
   textColor: '#5D3323',
   accentColor: '#C67B5C',
   templateId: null as string | null,
+  referenceImages: [] as import('../types').ReferenceImage[],
 }
