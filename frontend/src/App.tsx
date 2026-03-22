@@ -1,12 +1,17 @@
 import { useState, useEffect } from 'react'
+import { GoogleOAuthProvider } from '@react-oauth/google'
+import { AuthProvider } from './context/AuthContext'
 import { Header } from './components/Header'
 import { SinglePage } from './components/SinglePage'
 import { GalleryPage } from './pages/GalleryPage'
+import { ProtectedRoute } from './components/ProtectedRoute'
 import './App.css'
 
 type Page = 'home' | 'gallery'
 
-function App() {
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || 'YOUR_GOOGLE_CLIENT_ID'
+
+function AppContent() {
   const [currentPage, setCurrentPage] = useState<Page>('home')
 
   // Handle hash-based routing
@@ -36,10 +41,26 @@ function App() {
       />
       
       <main>
-        {currentPage === 'home' && <SinglePage />}
-        {currentPage === 'gallery' && <GalleryPage />}
+        {currentPage === 'home' && (
+          <SinglePage />
+        )}
+        {currentPage === 'gallery' && (
+          <ProtectedRoute>
+            <GalleryPage />
+          </ProtectedRoute>
+        )}
       </main>
     </div>
+  )
+}
+
+function App() {
+  return (
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </GoogleOAuthProvider>
   )
 }
 

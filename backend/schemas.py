@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import Optional, List
 from uuid import UUID
+from decimal import Decimal
 from pydantic import BaseModel, Field, EmailStr, ConfigDict
 
 
@@ -8,6 +9,19 @@ from pydantic import BaseModel, Field, EmailStr, ConfigDict
 
 class BaseSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
+
+
+# ============== Auth Schemas ==============
+
+class GoogleAuthRequest(BaseSchema):
+    id_token: str = Field(..., description="Google ID token from OAuth flow")
+
+
+class TokenResponse(BaseSchema):
+    access_token: str
+    token_type: str = "bearer"
+    expires_in: int
+    user: "UserResponse"
 
 
 # ============== User Schemas ==============
@@ -21,9 +35,16 @@ class UserCreate(UserBase):
     pass
 
 
-class UserResponse(UserBase):
+class UserResponse(BaseSchema):
     id: UUID
+    google_id: str
+    email: EmailStr
+    name: str
+    picture_url: Optional[str] = None
     created_at: datetime
+    last_login: datetime
+    is_active: bool
+    credits_remaining: int
 
 
 # ============== Template Schemas ==============
@@ -181,3 +202,52 @@ class HealthResponse(BaseSchema):
 class ErrorResponse(BaseSchema):
     detail: str
     error_code: Optional[str] = None
+
+
+# ============== Credit Schemas ==============
+
+class CreditResponse(BaseSchema):
+    credits_remaining: int
+    credits_used: int
+
+
+# ============== API Usage Schemas ==============
+
+class ApiUsageResponse(BaseSchema):
+    id: UUID
+    user_id: UUID
+    endpoint: str
+    tokens_used: int
+    cost: Decimal
+    created_at: datetime
+
+
+class ApiUsageListResponse(BaseSchema):
+    usage: List[ApiUsageResponse]
+    total: int
+
+
+# ============== Rate Limit Schemas ==============
+
+class RateLimitResponse(BaseSchema):
+    requests_count: int
+    limit: int
+    remaining: int
+    window_start: datetime
+    window_minutes: int
+    resets_at: Optional[datetime] = None
+
+
+# ============== Image Generation Schemas ==============
+
+class ImageGenerateRequest(BaseSchema):
+    prompt: str = Field(..., min_length=1, max_length=1000, description="Image generation prompt")
+    width: Optional[int] = Field(default=1024, ge=256, le=2048)
+    height: Optional[int] = Field(default=1024, ge=256, le=2048)
+    postcard_id: Optional[UUID] = None
+
+
+class ImageGenerateResponse(BaseSchema):
+    image_url: str
+    credits_remaining: int
+    cost_credits: int

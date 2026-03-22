@@ -1,9 +1,15 @@
+import { useAuth } from '../context/AuthContext'
+import { GoogleAuthButton } from './GoogleAuthButton'
+import { CreditDisplay } from './CreditDisplay'
+
 interface HeaderProps {
   onNavigate?: (page: 'home' | 'gallery') => void
   currentPage?: 'home' | 'gallery'
 }
 
 export function Header({ onNavigate, currentPage = 'home' }: HeaderProps) {
+  const { isAuthenticated, currentUser, logout } = useAuth()
+
   return (
     <header className="sticky top-0 z-50 bg-cream-50/80 backdrop-blur-md border-b border-cream-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -46,16 +52,29 @@ export function Header({ onNavigate, currentPage = 'home' }: HeaderProps) {
           </nav>
 
           {/* Actions */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => onNavigate?.('home')}
-              className="hidden sm:flex items-center gap-2 px-4 py-2 bg-terracotta-500 hover:bg-terracotta-600 text-white text-sm font-medium rounded-lg transition-all shadow-soft hover:shadow-warm"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-              New Card
-            </button>
+          <div className="flex items-center gap-3">
+            {/* Credit Display - shown when authenticated */}
+            {isAuthenticated && (
+              <div className="hidden sm:block">
+                <CreditDisplay />
+              </div>
+            )}
+
+            {/* Google Auth Button */}
+            <GoogleAuthButton />
+            
+            {/* New Card Button - only show when authenticated */}
+            {isAuthenticated && (
+              <button
+                onClick={() => onNavigate?.('home')}
+                className="hidden sm:flex items-center gap-2 px-4 py-2 bg-terracotta-500 hover:bg-terracotta-600 text-white text-sm font-medium rounded-lg transition-all shadow-soft hover:shadow-warm"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                New Card
+              </button>
+            )}
             
             {/* Mobile menu button */}
             <button 
@@ -75,6 +94,23 @@ export function Header({ onNavigate, currentPage = 'home' }: HeaderProps) {
         {/* Mobile Menu */}
         <div id="mobile-menu" className="hidden md:hidden py-4 border-t border-cream-200">
           <nav className="flex flex-col gap-2">
+            {/* Mobile Credit Display */}
+            {isAuthenticated && currentUser && (
+              <div className="px-4 py-3 bg-cream-100/50 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <img
+                    src={currentUser.picture}
+                    alt={currentUser.name}
+                    className="w-10 h-10 rounded-full border-2 border-cream-200"
+                  />
+                  <div>
+                    <p className="text-sm font-medium text-cream-900">{currentUser.name}</p>
+                    <p className="text-xs text-cream-500">{currentUser.credits} credits</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {[
               { id: 'home', label: 'Create' },
               { id: 'gallery', label: 'My Cards' },
@@ -96,6 +132,19 @@ export function Header({ onNavigate, currentPage = 'home' }: HeaderProps) {
                 {item.label}
               </button>
             ))}
+
+            {/* Mobile Logout */}
+            {isAuthenticated && (
+              <button
+                onClick={() => {
+                  logout()
+                  document.getElementById('mobile-menu')?.classList.add('hidden')
+                }}
+                className="px-4 py-3 rounded-lg text-sm font-medium text-left text-red-600 hover:bg-red-50 transition-colors"
+              >
+                Logout
+              </button>
+            )}
           </nav>
         </div>
       </div>

@@ -10,3 +10,5 @@ passlib[bcrypt]==1.7.4
 aiofiles==23.2.1
 alembic==1.13.1
 psycopg2-binary==2.9.9
+PyJWT==2.8.0
+google-auth==2.28.1

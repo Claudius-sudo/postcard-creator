@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 from typing import Optional, List
-from sqlalchemy import Column, String, DateTime, ForeignKey, Text, JSON, Enum as SQLEnum
+from sqlalchemy import Column, String, DateTime, ForeignKey, Text, JSON, Enum as SQLEnum, Integer, Boolean, Numeric
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.orm import relationship
 from enum import Enum as PyEnum
@@ -26,12 +26,19 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    google_id = Column(String(255), unique=True, nullable=False, index=True)
     email = Column(String(255), unique=True, nullable=False, index=True)
     name = Column(String(255), nullable=False)
+    picture_url = Column(Text, nullable=True)
     created_at = Column(DateTime(timezone=True), default=datetime.utcnow, nullable=False)
+    last_login = Column(DateTime(timezone=True), default=datetime.utcnow, nullable=False)
+    is_active = Column(Boolean, default=True, nullable=False)
+    credits_remaining = Column(Integer, default=10, nullable=False)
 
     # Relationships
     postcards = relationship("Postcard", back_populates="user", cascade="all, delete-orphan")
+    api_usage = relationship("ApiUsage", back_populates="user", cascade="all, delete-orphan")
+    rate_limit = relationship("RateLimit", back_populates="user", uselist=False, cascade="all, delete-orphan")
 
 
 class Template(Base):
@@ -96,3 +103,28 @@ class ReferenceImage(Base):
 
     # Relationships
     postcard = relationship("Postcard", back_populates="reference_images")
+
+
+class ApiUsage(Base):
+    __tablename__ = "api_usage"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    endpoint = Column(String(255), nullable=False)
+    tokens_used = Column(Integer, default=0, nullable=False)
+    cost = Column(Numeric(10, 6), default=0.0, nullable=False)
+    created_at = Column(DateTime(timezone=True), default=datetime.utcnow, nullable=False)
+
+    # Relationships
+    user = relationship("User", back_populates="api_usage")
+
+
+class RateLimit(Base):
+    __tablename__ = "rate_limits"
+
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
+    requests_count = Column(Integer, default=0, nullable=False)
+    window_start = Column(DateTime(timezone=True), default=datetime.utcnow, nullable=False)
+
+    # Relationships
+    user = relationship("User", back_populates="rate_limit")

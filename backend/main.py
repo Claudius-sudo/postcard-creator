@@ -12,7 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from database import get_db, init_db
-from models import User, Template, Postcard, Recipient, PostcardStatus, ReferenceImage, ReferenceImageType
+from models import User, Template, Postcard, Recipient, PostcardStatus, ReferenceImage, ReferenceImageType, ApiUsage
 from schemas import (
     HealthResponse,
     TemplateResponse,
@@ -29,6 +29,26 @@ from schemas import (
     ReferenceImageCreate,
     ReferenceImageResponse,
     ReferenceImageList,
+    GoogleAuthRequest,
+    TokenResponse,
+    UserResponse,
+    CreditResponse,
+    ApiUsageResponse,
+    ApiUsageListResponse,
+    RateLimitResponse,
+    ImageGenerateRequest,
+    ImageGenerateResponse,
+)
+from auth import (
+    verify_google_token,
+    get_or_create_user,
+    create_jwt_token,
+    get_current_user,
+    check_rate_limit,
+    get_rate_limit_status,
+    check_credits,
+    deduct_credits,
+    JWT_EXPIRATION_HOURS,
 )
 
 # ============== Configuration ==============
@@ -72,6 +92,13 @@ app.add_middleware(
 async def startup_event():
     """Initialize database on startup."""
     await init_db()
+    
+    # Log JWT secret status (don't log the actual secret)
+    from auth import JWT_SECRET_KEY
+    if JWT_SECRET_KEY == "YOUR_GOOGLE_CLIENT_ID_HERE" or len(JWT_SECRET_KEY) < 32:
+        print("WARNING: Using default/placeholder JWT_SECRET_KEY. Please set a secure JWT_SECRET_KEY in production.")
+    else:
+        print("JWT authentication configured successfully.")
 
 
 # ============== Exception Handlers ==============
@@ -93,6 +120,171 @@ async def health_check():
         status="healthy",
         timestamp=datetime.utcnow(),
     )
+
+
+# ============== Auth Endpoints ==============
+
+@app.post("/auth/google", response_model=TokenResponse, tags=["Authentication"])
+async def google_auth(
+    auth_data: GoogleAuthRequest,
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Exchange Google ID token for JWT access token.
+    
+    - Verifies the Google ID token
+    - Creates or updates user in database
+    - Returns JWT access token for API authentication
+    """
+    try:
+        # Verify Google token
+        google_info = await verify_google_token(auth_data.id_token)
+        
+        # Extract user info
+        google_id = google_info.get("sub")
+        email = google_info.get("email")
+        name = google_info.get("name", email.split("@")[0] if email else "User")
+        picture_url = google_info.get("picture")
+        
+        if not google_id or not email:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid Google token: missing user information",
+            )
+        
+        # Get or create user
+        user = await get_or_create_user(
+            db=db,
+            google_id=google_id,
+            email=email,
+            name=name,
+            picture_url=picture_url
+        )
+        
+        # Create JWT token
+        access_token = create_jwt_token(str(user.id))
+        
+        return TokenResponse(
+            access_token=access_token,
+            token_type="bearer",
+            expires_in=JWT_EXPIRATION_HOURS * 3600,
+            user=UserResponse.model_validate(user)
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Authentication failed: {str(e)}",
+        )
+
+
+@app.get("/auth/me", response_model=UserResponse, tags=["Authentication"])
+async def get_current_user_info(
+    current_user: User = Depends(get_current_user),
+):
+    """
+    Get current authenticated user information.
+    
+    - Requires valid JWT token in Authorization header
+    - Returns user profile including credits
+    """
+    return UserResponse.model_validate(current_user)
+
+
+@app.get("/credits", response_model=CreditResponse, tags=["Credits"])
+async def get_credits(
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Get current user's credit balance.
+    
+    - Requires valid JWT token
+    - Returns remaining credits and usage stats
+    """
+    # Calculate credits used (starting from default 10)
+    credits_used = 10 - current_user.credits_remaining
+    
+    return CreditResponse(
+        credits_remaining=current_user.credits_remaining,
+        credits_used=max(0, credits_used)
+    )
+
+
+@app.get("/rate-limit", response_model=RateLimitResponse, tags=["Rate Limiting"])
+async def get_rate_limit(
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Get current rate limit status.
+    
+    - Requires valid JWT token
+    - Returns request count, limit, and reset time
+    """
+    rate_limit_info = await get_rate_limit_status(current_user, db)
+    return RateLimitResponse(**rate_limit_info)
+
+
+# ============== Image Generation Endpoints ==============
+
+@app.post("/images/generate", response_model=ImageGenerateResponse, tags=["Image Generation"])
+async def generate_image(
+    request: ImageGenerateRequest,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Generate an image using AI (protected endpoint).
+    
+    - Requires valid JWT token
+    - Checks rate limits
+    - Checks and deducts credits
+    - Calls Nano Banana API for generation
+    - Logs API usage
+    """
+    # Check rate limits
+    await check_rate_limit(current_user, db)
+    
+    # Check credits (default cost: 1 credit)
+    await check_credits(current_user, required_credits=1)
+    
+    try:
+        # TODO: Integrate with Nano Banana API
+        # For now, return a placeholder response
+        # In production, this would call the actual image generation API
+        
+        # Placeholder: Simulate image generation
+        # Replace this with actual Nano Banana API call
+        
+        # Deduct credits and log usage
+        updated_user = await deduct_credits(
+            user=current_user,
+            db=db,
+            amount=1,
+            endpoint="/images/generate",
+            tokens_used=0,  # Update based on actual API usage
+            cost=0.0  # Update based on actual cost
+        )
+        
+        # Placeholder image URL - replace with actual generated image URL
+        placeholder_image_url = f"/generated/{uuid.uuid4()}.png"
+        
+        return ImageGenerateResponse(
+            image_url=placeholder_image_url,
+            credits_remaining=updated_user.credits_remaining,
+            cost_credits=1
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Image generation failed: {str(e)}",
+        )
 
 
 # ============== Template Endpoints ==============
