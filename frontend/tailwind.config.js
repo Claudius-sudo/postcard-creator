@@ -1,0 +1,122 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        // Nature Distilled Palette
+        terracotta: {
+          50: '#FDF0EB',
+          100: '#F9DED4',
+          200: '#F3C3B0',
+          300: '#EAA08A',
+          400: '#D47D66',
+          500: '#C67B5C',
+          600: '#B56A4B',
+          700: '#9A5539',
+          800: '#7D452F',
+          900: '#5D3323',
+        },
+        cream: {
+          50: '#FDF8F3',
+          100: '#FAF3EA',
+          200: '#F5E9D9',
+          300: '#EFDEC5',
+          400: '#E5D0B0',
+          500: '#D9C09A',
+          600: '#C4A882',
+          700: '#A68B6A',
+          800: '#8A7357',
+          900: '#6E5C46',
+        },
+        sage: {
+          50: '#F4F7F4',
+          100: '#E8F0E8',
+          200: '#D1E1D1',
+          300: '#A8C9A8',
+          400: '#7BA87B',
+          500: '#5A8A5A',
+          600: '#466E46',
+          700: '#385738',
+          800: '#2E452E',
+          900: '#263826',
+        },
+        golden: {
+          50: '#FDF9F0',
+          100: '#FAF1DB',
+          200: '#F5E3B8',
+          300: '#EDD08A',
+          400: '#E3BA5C',
+          500: '#D4A03D',
+          600: '#B8862E',
+          700: '#966B24',
+          800: '#7A5620',
+          900: '#61461D',
+        },
+        dustyrose: {
+          50: '#FDF5F5',
+          100: '#F9E8E8',
+          200: '#F2D1D1',
+          300: '#E8B0B0',
+          400: '#D98888',
+          500: '#C76767',
+          600: '#A84D4D',
+          700: '#8C3F3F',
+          800: '#733636',
+          900: '#5E2E2E',
+        },
+        // Keep primary for backward compatibility
+        primary: {
+          50: '#FDF0EB',
+          100: '#F9DED4',
+          200: '#F3C3B0',
+          300: '#EAA08A',
+          400: '#D47D66',
+          500: '#C67B5C',
+          600: '#B56A4B',
+          700: '#9A5539',
+          800: '#7D452F',
+          900: '#5D3323',
+        },
+      },
+      fontFamily: {
+        display: ['Playfair Display', 'Georgia', 'serif'],
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        handwritten: ['Caveat', 'cursive'],
+      },
+      boxShadow: {
+        'soft': '0 4px 20px -2px rgba(198, 123, 92, 0.15)',
+        'warm': '0 8px 30px -4px rgba(198, 123, 92, 0.25)',
+        'card': '0 2px 12px rgba(0, 0, 0, 0.08)',
+      },
+      borderRadius: {
+        'xl': '1rem',
+        '2xl': '1.5rem',
+        '3xl': '2rem',
+      },
+      animation: {
+        'fade-in': 'fadeIn 0.5s ease-out',
+        'slide-up': 'slideUp 0.4s ease-out',
+        'float': 'float 3s ease-in-out infinite',
+      },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        slideUp: {
+          '0%': { transform: 'translateY(20px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
+      },
+    },
+  },
+  plugins: [],
+}

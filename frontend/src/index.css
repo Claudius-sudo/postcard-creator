@@ -1,0 +1,141 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
+  font-weight: 400;
+  color-scheme: light;
+  color: #5D3323;
+  background-color: #FDF8F3;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #FDF8F3 0%, #FAF3EA 100%);
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F5E9D9;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #C67B5C;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #B56A4B;
+}
+
+/* Typography utilities */
+.font-display {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+.font-handwritten {
+  font-family: 'Caveat', cursive;
+}
+
+/* Focus styles */
+*:focus-visible {
+  outline: 2px solid #C67B5C;
+  outline-offset: 2px;
+}
+
+/* Button hover effects */
+.btn-warm {
+  transition: all 0.3s ease;
+}
+
+.btn-warm:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px -4px rgba(198, 123, 92, 0.35);
+}
+
+.btn-warm:active {
+  transform: translateY(0);
+}
+
+/* Card hover effects */
+.card-warm {
+  transition: all 0.3s ease;
+}
+
+.card-warm:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px -8px rgba(198, 123, 92, 0.2);
+}
+
+/* Input focus styles */
+.input-warm {
+  transition: all 0.2s ease;
+  border: 2px solid #F5E9D9;
+}
+
+.input-warm:focus {
+  border-color: #C67B5C;
+  box-shadow: 0 0 0 4px rgba(198, 123, 92, 0.1);
+}
+
+/* Gradient backgrounds */
+.bg-gradient-warm {
+  background: linear-gradient(135deg, #FDF8F3 0%, #F9DED4 50%, #F5E9D9 100%);
+}
+
+.bg-gradient-terracotta {
+  background: linear-gradient(135deg, #C67B5C 0%, #B56A4B 100%);
+}
+
+/* Pattern overlay */
+.pattern-dots {
+  background-image: radial-gradient(#C67B5C 1px, transparent 1px);
+  background-size: 20px 20px;
+  opacity: 0.1;
+}
+
+/* Animation utilities */
+.animate-delay-100 {
+  animation-delay: 100ms;
+}
+
+.animate-delay-200 {
+  animation-delay: 200ms;
+}
+
+.animate-delay-300 {
+  animation-delay: 300ms;
+}
+
+/* Selection color */
+::selection {
+  background: rgba(198, 123, 92, 0.3);
+  color: #5D3323;
+}
