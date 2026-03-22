@@ -1,6 +1,6 @@
 interface HeaderProps {
-  onNavigate?: (page: 'home' | 'create' | 'gallery') => void
-  currentPage?: 'home' | 'create' | 'gallery'
+  onNavigate?: (page: 'home' | 'gallery') => void
+  currentPage?: 'home' | 'gallery'
 }
 
 export function Header({ onNavigate, currentPage = 'home' }: HeaderProps) {
@@ -26,13 +26,12 @@ export function Header({ onNavigate, currentPage = 'home' }: HeaderProps) {
           {/* Navigation */}
           <nav className="hidden md:flex items-center gap-1">
             {[
-              { id: 'home', label: 'Home' },
-              { id: 'create', label: 'Create' },
+              { id: 'home', label: 'Create' },
               { id: 'gallery', label: 'My Cards' },
             ].map((item) => (
               <button
                 key={item.id}
-                onClick={() => onNavigate?.(item.id as 'home' | 'create' | 'gallery')}
+                onClick={() => onNavigate?.(item.id as 'home' | 'gallery')}
                 className={`
                   px-4 py-2 rounded-lg text-sm font-medium transition-colors
                   ${currentPage === item.id
@@ -49,7 +48,7 @@ export function Header({ onNavigate, currentPage = 'home' }: HeaderProps) {
           {/* Actions */}
           <div className="flex items-center gap-2">
             <button
-              onClick={() => onNavigate?.('create')}
+              onClick={() => onNavigate?.('home')}
               className="hidden sm:flex items-center gap-2 px-4 py-2 bg-terracotta-500 hover:bg-terracotta-600 text-white text-sm font-medium rounded-lg transition-all shadow-soft hover:shadow-warm"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -59,12 +58,45 @@ export function Header({ onNavigate, currentPage = 'home' }: HeaderProps) {
             </button>
             
             {/* Mobile menu button */}
-            <button className="md:hidden p-2 text-cream-700 hover:text-cream-900 hover:bg-cream-100 rounded-lg">
+            <button 
+              className="md:hidden p-2 text-cream-700 hover:text-cream-900 hover:bg-cream-100 rounded-lg"
+              onClick={() => {
+                const menu = document.getElementById('mobile-menu')
+                menu?.classList.toggle('hidden')
+              }}
+            >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
           </div>
+        </div>
+
+        {/* Mobile Menu */}
+        <div id="mobile-menu" className="hidden md:hidden py-4 border-t border-cream-200">
+          <nav className="flex flex-col gap-2">
+            {[
+              { id: 'home', label: 'Create' },
+              { id: 'gallery', label: 'My Cards' },
+            ].map((item) => (
+              <button
+                key={item.id}
+                onClick={() => {
+                  onNavigate?.(item.id as 'home' | 'gallery')
+                  document.getElementById('mobile-menu')?.classList.add('hidden')
+                }}
+                className={`
+                  px-4 py-3 rounded-lg text-sm font-medium text-left transition-colors
+                  ${currentPage === item.id
+                    ? 'text-terracotta-600 bg-terracotta-50'
+                    : 'text-cream-700 hover:text-cream-900 hover:bg-cream-100'
+                  }
+                `}
+              >
+                {item.label}
+              </button>
+            ))}
+          </nav>
         </div>
       </div>
     </header>

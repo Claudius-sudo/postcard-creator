@@ -85,7 +85,7 @@ export function GalleryPage({ onEdit }: GalleryPageProps) {
         <p className="text-cream-600 mb-6 max-w-md mx-auto">
           Start creating beautiful postcards to share with your loved ones.
         </p>
-        <Button onClick={() => window.location.href = '#/create'}>
+        <Button onClick={() => window.location.href = '#home'}>
           Create Your First Postcard
         </Button>
       </div>
@@ -106,7 +106,7 @@ export function GalleryPage({ onEdit }: GalleryPageProps) {
             </p>
           </div>
           
-          <Button onClick={() => window.location.href = '#/create'}>
+          <Button onClick={() => window.location.href = '#home'}>
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
