@@ -60,7 +60,17 @@ Last updated: 2026-03-23
 - [ ] Email notifications for completed postcards
 
 ### Medium Priority
-- [ ] **Message Section Redesign** - Fun names, front/inside card split:
+- [ ] **Message Section Redesign** - Fun names, front/inside card split, AI generation:
+  - Rename "Your Message" to something fun/playful
+  - Split into two sections:
+    - **"Picture Side"** - Text that appears on front of postcard
+    - **"Inner Side"** - Text that appears inside the card
+  - **"Shake It Up" button** (bottom right) - Generates new AI titles and inner card text
+  - Button provides creative variations on demand
+  - Update UI labels and placeholder text
+  - Both sections clearly labeled and editable
+
+- [ ] **Character Card Updates** - Remove signage, fix before/after labels:
   - Rename "Your Message" to something fun/playful
   - Split into two sections:
     - **"Picture Side"** - Text that appears on front of postcard
