@@ -40,9 +40,10 @@ const templates: PostcardTemplate[] = [
 
 interface PostcardEditorProps {
   occasion?: Occasion | null
+  isFocused?: boolean
 }
 
-export function PostcardEditor({ occasion }: PostcardEditorProps = {}) {
+export function PostcardEditor({ occasion, isFocused = false }: PostcardEditorProps = {}) {
   const {
     design,
     updateTitle,
@@ -117,11 +118,11 @@ export function PostcardEditor({ occasion }: PostcardEditorProps = {}) {
   }, [])
 
   return (
-    <div className="grid lg:grid-cols-2 gap-8">
+    <div className={`grid lg:grid-cols-2 gap-8 transition-all duration-500 ease-out ${isFocused ? 'fixed inset-0 z-50 bg-[#F5E9D9] p-8 lg:p-12 overflow-y-auto' : ''}`}>
       {/* Editor Panel */}
       <div className="space-y-6">
         {/* Template Selector */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-soft border border-cream-200">
+        <div className={`bg-white/80 backdrop-blur-sm rounded-2xl shadow-soft border border-cream-200 transition-all duration-500 ${isFocused ? 'p-8' : 'p-6'}`}>
           <h3 className="font-display text-lg font-semibold text-cream-900 mb-4">
             Choose a Template
           </h3>
@@ -154,7 +155,7 @@ export function PostcardEditor({ occasion }: PostcardEditorProps = {}) {
         </div>
 
         {/* Text Inputs */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-soft border border-cream-200 space-y-4">
+        <div className={`bg-white/80 backdrop-blur-sm rounded-2xl shadow-soft border border-cream-200 space-y-4 transition-all duration-500 ${isFocused ? 'p-8' : 'p-6'}`}>
           <h3 className="font-display text-lg font-semibold text-cream-900">
             Your Message
           </h3>
@@ -168,7 +169,7 @@ export function PostcardEditor({ occasion }: PostcardEditorProps = {}) {
               value={design.title}
               onChange={(e) => updateTitle(e.target.value)}
               placeholder="Enter a title..."
-              className="w-full px-4 py-3 rounded-xl border-2 border-cream-200 focus:border-terracotta-400 focus:outline-none transition-colors bg-cream-50/50"
+              className={`w-full rounded-xl border-2 border-cream-200 focus:border-terracotta-400 focus:outline-none transition-all duration-500 bg-cream-50/50 ${isFocused ? 'px-6 py-4 text-lg' : 'px-4 py-3'}`}
               style={{ fontFamily: design.fontFamily }}
             />
           </div>
@@ -181,15 +182,15 @@ export function PostcardEditor({ occasion }: PostcardEditorProps = {}) {
               value={design.message}
               onChange={(e) => updateMessage(e.target.value)}
               placeholder="Write your message..."
-              rows={4}
-              className="w-full px-4 py-3 rounded-xl border-2 border-cream-200 focus:border-terracotta-400 focus:outline-none transition-colors bg-cream-50/50 resize-none"
+              rows={isFocused ? 6 : 4}
+              className={`w-full rounded-xl border-2 border-cream-200 focus:border-terracotta-400 focus:outline-none transition-all duration-500 bg-cream-50/50 resize-none ${isFocused ? 'px-6 py-4 text-lg' : 'px-4 py-3'}`}
               style={{ fontFamily: design.fontFamily }}
             />
           </div>
         </div>
 
         {/* Image Upload */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-soft border border-cream-200">
+        <div className={`bg-white/80 backdrop-blur-sm rounded-2xl shadow-soft border border-cream-200 transition-all duration-500 ${isFocused ? 'p-8' : 'p-6'}`}>
           <h3 className="font-display text-lg font-semibold text-cream-900 mb-4">
             Add Image
           </h3>
@@ -207,7 +208,7 @@ export function PostcardEditor({ occasion }: PostcardEditorProps = {}) {
               <img
                 src={design.image}
                 alt="Postcard"
-                className="w-full h-48 object-cover rounded-xl"
+                className={`w-full object-cover rounded-xl transition-all duration-500 ${isFocused ? 'h-64' : 'h-48'}`}
               />
               <button
                 onClick={() => updateImage(null)}
@@ -221,7 +222,7 @@ export function PostcardEditor({ occasion }: PostcardEditorProps = {}) {
           ) : (
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="w-full h-48 rounded-xl border-2 border-dashed border-cream-300 hover:border-terracotta-400 flex flex-col items-center justify-center gap-3 transition-colors bg-cream-50/50"
+              className={`w-full rounded-xl border-2 border-dashed border-cream-300 hover:border-terracotta-400 flex flex-col items-center justify-center gap-3 transition-all duration-500 bg-cream-50/50 ${isFocused ? 'h-64' : 'h-48'}`}
             >
               <div className="w-12 h-12 rounded-full bg-terracotta-100 flex items-center justify-center">
                 <svg className="w-6 h-6 text-terracotta-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -260,15 +261,15 @@ export function PostcardEditor({ occasion }: PostcardEditorProps = {}) {
       </div>
 
       {/* Preview Panel */}
-      <div className="lg:sticky lg:top-24 h-fit">
-        <h3 className="font-display text-lg font-semibold text-cream-900 mb-4">
+      <div className={`h-fit transition-all duration-500 ${isFocused ? 'lg:sticky lg:top-8' : 'lg:sticky lg:top-24'}`}>
+        <h3 className={`font-display font-semibold text-cream-900 mb-4 transition-all duration-500 ${isFocused ? 'text-xl' : 'text-lg'}`}>
           Preview
         </h3>
-        
-        <div 
+
+        <div
           ref={previewRef}
-          className="rounded-2xl overflow-hidden shadow-warm transition-all duration-300"
-          style={{ 
+          className={`rounded-2xl overflow-hidden shadow-warm transition-all duration-500 ${isFocused ? 'scale-105' : 'scale-100'}`}
+          style={{
             backgroundColor: design.backgroundColor,
             aspectRatio: '3/2'
           }}

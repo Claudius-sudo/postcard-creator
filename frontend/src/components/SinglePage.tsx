@@ -5,6 +5,8 @@ import { OccasionSelector, OCCASIONS, type Occasion } from './OccasionSelector'
 
 export function SinglePage() {
   const [scrollY, setScrollY] = useState(0)
+  const [scrollProgress, setScrollProgress] = useState(0)
+  const [isFocused, setIsFocused] = useState(false)
   const [showEditor, setShowEditor] = useState(false)
   const [selectedOccasion, setSelectedOccasion] = useState<Occasion | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -13,10 +15,21 @@ export function SinglePage() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrollY(window.scrollY)
+      const currentScrollY = window.scrollY
+      const windowHeight = window.innerHeight
+      const documentHeight = document.documentElement.scrollHeight
+      const maxScroll = documentHeight - windowHeight
+      const progress = maxScroll > 0 ? (currentScrollY / maxScroll) * 100 : 0
+
+      setScrollY(currentScrollY)
+      setScrollProgress(progress)
+
+      // Trigger focus mode at 90%+ scroll
+      setIsFocused(progress >= 90)
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
+    handleScroll() // Initial check
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
@@ -38,14 +51,18 @@ export function SinglePage() {
   }, [scrollToEditor])
 
   return (
-    <div 
+    <div
       ref={containerRef}
-      className="relative min-h-screen overflow-x-hidden"
-      style={{ background: 'linear-gradient(180deg, #FDF8F3 0%, #FAF3EA 50%, #F5E9D9 100%)' }}
+      className="relative min-h-screen overflow-x-hidden transition-all duration-700"
+      style={{
+        background: isFocused
+          ? '#F5E9D9'
+          : 'linear-gradient(180deg, #FDF8F3 0%, #FAF3EA 50%, #F5E9D9 100%)'
+      }}
     >
       {/* Background Pattern */}
-      <div className="fixed inset-0 pointer-events-none">
-        <div 
+      <div className={`fixed inset-0 pointer-events-none transition-opacity duration-700 ${isFocused ? 'opacity-0' : 'opacity-100'}`}>
+        <div
           className="absolute inset-0 opacity-[0.03]"
           style={{
             backgroundImage: `radial-gradient(#C67B5C 2px, transparent 2px)`,
@@ -55,7 +72,7 @@ export function SinglePage() {
       </div>
 
       {/* Hero Section */}
-      <section className="relative min-h-[50vh] flex items-center justify-center px-4">
+      <section className={`relative min-h-[50vh] flex items-center justify-center px-4 transition-all duration-700 ${isFocused ? 'opacity-20 blur-sm pointer-events-none' : 'opacity-100 blur-0'}`}>
         <div className="text-center max-w-3xl mx-auto">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-terracotta-100/50 text-terracotta-700 text-sm font-medium mb-6 animate-fade-in">
             <span className="w-2 h-2 rounded-full bg-terracotta-500 animate-pulse" />
@@ -98,53 +115,55 @@ export function SinglePage() {
       </section>
 
       {/* Occasion Selector - AT THE TOP */}
-      <section 
+      <section
         ref={occasionRef}
-        className="relative py-8 px-4 bg-white/40 backdrop-blur-sm border-y border-cream-200"
+        className={`relative py-8 px-4 bg-white/40 backdrop-blur-sm border-y border-cream-200 transition-all duration-700 ${isFocused ? 'opacity-30 blur-[2px] pointer-events-none' : 'opacity-100 blur-0'}`}
       >
-        <OccasionSelector 
+        <OccasionSelector
           onSelect={handleOccasionSelect}
           selectedOccasion={selectedOccasion}
         />
       </section>
 
       {/* Character Showcase - Characters slide in from sides */}
-      <CharacterShowcase />
+      <div className={`transition-all duration-700 ${isFocused ? 'opacity-0 blur-md pointer-events-none h-0 overflow-hidden' : 'opacity-100 blur-0'}`}>
+        <CharacterShowcase />
+      </div>
 
       {/* Main Editor Section */}
-      <section 
+      <section
         ref={editorRef}
-        className="relative py-16 px-4"
+        className={`relative py-16 px-4 transition-all duration-700 ${isFocused ? 'py-8' : 'py-16'}`}
       >
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
+        <div className={`mx-auto transition-all duration-700 ${isFocused ? 'max-w-none' : 'max-w-6xl'}`}>
+          <div className={`text-center mb-12 transition-all duration-700 ${isFocused ? 'opacity-0 h-0 overflow-hidden mb-0' : 'opacity-100'}`}>
             <h2 className="font-display text-3xl md:text-4xl font-bold text-cream-900 mb-4">
               {selectedOccasion ? `Design Your ${selectedOccasion.name} Postcard` : 'Design Your Postcard'}
             </h2>
             <p className="text-cream-600 max-w-lg mx-auto">
-              {selectedOccasion 
+              {selectedOccasion
                 ? `Create a beautiful ${selectedOccasion.name.toLowerCase()} postcard with personalized touches.`
                 : 'Use the editor below to create your masterpiece. Add photos, customize text, and make it uniquely yours.'
               }
             </p>
           </div>
 
-          <PostcardEditor occasion={selectedOccasion} />
+          <PostcardEditor occasion={selectedOccasion} isFocused={isFocused} />
         </div>
       </section>
 
       {/* Gallery Teaser */}
-      <section className="py-16 px-4">
+      <section className={`py-16 px-4 transition-all duration-700 ${isFocused ? 'opacity-0 blur-[2px] pointer-events-none' : 'opacity-100 blur-0'}`}>
         <div className="max-w-4xl mx-auto text-center">
           <div className="bg-white/60 backdrop-blur-sm rounded-3xl p-8 md:p-12 shadow-soft border border-cream-200">
             <h3 className="font-display text-2xl md:text-3xl font-bold text-cream-900 mb-4">
               Your Collection Awaits
             </h3>
             <p className="text-cream-600 mb-6">
-              All your created postcards are saved to your personal gallery. 
+              All your created postcards are saved to your personal gallery.
               Revisit, edit, or share them anytime.
             </p>
-            <a 
+            <a
               href="#gallery"
               className="inline-flex items-center gap-2 text-terracotta-600 hover:text-terracotta-700 font-medium transition-colors"
             >
@@ -158,7 +177,7 @@ export function SinglePage() {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-4 border-t border-cream-200">
+      <footer className={`py-8 px-4 border-t border-cream-200 transition-all duration-700 ${isFocused ? 'opacity-20 blur-sm' : 'opacity-100 blur-0'}`}>
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-cream-500 text-sm">
             Made with 💌 using the warm &quot;Nature Distilled&quot; palette
