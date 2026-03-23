@@ -9,9 +9,8 @@ interface Character {
   beforeImage: string
   afterImage: string
   side: 'left' | 'right'
-  offsetY: number
-  scrollThreshold: number // 0-100, when character appears (percentage of page scroll)
-  bounceDelay: number // Delay for bounce animation offset
+  // Visibility window: [enterStart, exitEnd] as percentage of scroll (0-100)
+  visibilityWindow: [number, number]
 }
 
 const characters: Character[] = [
@@ -23,9 +22,7 @@ const characters: Character[] = [
     beforeImage: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop",
     afterImage: "/characters/luna-3d.png",
     side: 'left',
-    offsetY: 0,
-    scrollThreshold: 5,
-    bounceDelay: 0
+    visibilityWindow: [0, 20]
   },
   {
     id: 2,
@@ -35,9 +32,7 @@ const characters: Character[] = [
     beforeImage: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
     afterImage: "/characters/kai-anime.png",
     side: 'right',
-    offsetY: 100,
-    scrollThreshold: 15,
-    bounceDelay: 0.5
+    visibilityWindow: [15, 35]
   },
   {
     id: 3,
@@ -47,9 +42,7 @@ const characters: Character[] = [
     beforeImage: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop",
     afterImage: "/characters/milo-watercolor.png",
     side: 'left',
-    offsetY: 200,
-    scrollThreshold: 30,
-    bounceDelay: 1
+    visibilityWindow: [30, 50]
   },
   {
     id: 4,
@@ -59,9 +52,7 @@ const characters: Character[] = [
     beforeImage: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop",
     afterImage: "/characters/zara-digital.png",
     side: 'right',
-    offsetY: 150,
-    scrollThreshold: 45,
-    bounceDelay: 0.3
+    visibilityWindow: [45, 65]
   },
   {
     id: 5,
@@ -71,9 +62,7 @@ const characters: Character[] = [
     beforeImage: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop",
     afterImage: "/characters/oliver-pixar.png",
     side: 'left',
-    offsetY: 300,
-    scrollThreshold: 60,
-    bounceDelay: 0.7
+    visibilityWindow: [60, 80]
   },
   {
     id: 6,
@@ -83,31 +72,24 @@ const characters: Character[] = [
     beforeImage: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop",
     afterImage: "/characters/sophie-chibi.png",
     side: 'right',
-    offsetY: 250,
-    scrollThreshold: 75,
-    bounceDelay: 0.2
-  },
-  {
-    id: 7,
-    name: "Leo",
-    style: "Vector Art",
-    description: "Clean and graphic",
-    beforeImage: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop",
-    afterImage: "/characters/leo-vector.png",
-    side: 'left',
-    offsetY: 400,
-    scrollThreshold: 88,
-    bounceDelay: 0.9
+    visibilityWindow: [75, 95]
   }
 ]
 
-interface CharacterShowcaseProps {
-  scrollY: number
+// Animation phases
+const ENTER_DURATION = 5 // percentage of scroll for enter animation
+const EXIT_DURATION = 5 // percentage of scroll for exit animation
+
+type AnimationState = 'hidden' | 'entering' | 'visible' | 'exiting'
+
+interface CharacterState {
+  state: AnimationState
+  progress: number // 0-1 progress within current animation phase
 }
 
-export function CharacterShowcase({ scrollY }: CharacterShowcaseProps) {
+export function CharacterShowcase() {
   const [scrollProgress, setScrollProgress] = useState(0)
-  const [visibleCharacters, setVisibleCharacters] = useState<Set<number>>(new Set())
+  const [characterStates, setCharacterStates] = useState<Map<number, CharacterState>>(new Map())
   const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(null)
   const [isMobile, setIsMobile] = useState(false)
 
@@ -136,15 +118,43 @@ export function CharacterShowcase({ scrollY }: CharacterShowcaseProps) {
     }
   }, [])
 
-  // Update visible characters based on scroll progress
+  // Update character animation states based on scroll progress
   useEffect(() => {
-    const newVisible = new Set<number>()
+    const newStates = new Map<number, CharacterState>()
+    
     characters.forEach((char) => {
-      if (scrollProgress >= char.scrollThreshold) {
-        newVisible.add(char.id)
+      const [windowStart, windowEnd] = char.visibilityWindow
+      const windowDuration = windowEnd - windowStart
+      
+      let state: AnimationState = 'hidden'
+      let progress = 0
+      
+      if (scrollProgress < windowStart) {
+        // Before visibility window - hidden
+        state = 'hidden'
+        progress = 0
+      } else if (scrollProgress < windowStart + ENTER_DURATION) {
+        // Entering phase
+        state = 'entering'
+        progress = (scrollProgress - windowStart) / ENTER_DURATION
+      } else if (scrollProgress < windowEnd - EXIT_DURATION) {
+        // Fully visible phase
+        state = 'visible'
+        progress = (scrollProgress - (windowStart + ENTER_DURATION)) / (windowDuration - ENTER_DURATION - EXIT_DURATION)
+      } else if (scrollProgress < windowEnd) {
+        // Exiting phase
+        state = 'exiting'
+        progress = (scrollProgress - (windowEnd - EXIT_DURATION)) / EXIT_DURATION
+      } else {
+        // After visibility window - hidden
+        state = 'hidden'
+        progress = 1
       }
+      
+      newStates.set(char.id, { state, progress })
     })
-    setVisibleCharacters(newVisible)
+    
+    setCharacterStates(newStates)
   }, [scrollProgress])
 
   const handleCharacterClick = useCallback((character: Character) => {
@@ -155,75 +165,121 @@ export function CharacterShowcase({ scrollY }: CharacterShowcaseProps) {
     setSelectedCharacter(null)
   }, [])
 
-  // Calculate character position based on scroll progress
-  const getCharacterStyle = (character: Character) => {
-    const isVisible = visibleCharacters.has(character.id)
+  // Calculate character transform based on animation state
+  const getCharacterStyle = (character: Character, charState: CharacterState | undefined) => {
+    if (!charState || charState.state === 'hidden') {
+      return {
+        opacity: 0,
+        transform: character.side === 'left' 
+          ? 'translateX(-200%) scale(0.5)' 
+          : 'translateX(200%) scale(0.5)',
+        pointerEvents: 'none' as const
+      }
+    }
+
+    const { state, progress } = charState
     
-    // Base position calculation - characters move slightly as user scrolls
-    const scrollOffset = (scrollProgress - character.scrollThreshold) * 2
-    const baseY = character.offsetY + (isVisible ? scrollOffset : 0)
-    
+    // Easing function for smooth bounce
+    const easeOutBounce = (t: number) => {
+      const n1 = 7.5625
+      const d1 = 2.75
+      if (t < 1 / d1) {
+        return n1 * t * t
+      } else if (t < 2 / d1) {
+        return n1 * (t -= 1.5 / d1) * t + 0.75
+      } else if (t < 2.5 / d1) {
+        return n1 * (t -= 2.25 / d1) * t + 0.9375
+      } else {
+        return n1 * (t -= 2.625 / d1) * t + 0.984375
+      }
+    }
+
+    const easeInOutCubic = (t: number) => {
+      return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
+    }
+
+    let translateX = 0
+    let scale = 1
+    let opacity = 1
+    let rotate = 0
+
+    switch (state) {
+      case 'entering':
+        // Slide in from side with bounce
+        const enterProgress = easeOutBounce(progress)
+        const startOffset = character.side === 'left' ? -200 : 200
+        translateX = startOffset * (1 - enterProgress)
+        scale = 0.5 + (0.5 * enterProgress)
+        opacity = progress
+        rotate = (character.side === 'left' ? -1 : 1) * (1 - enterProgress) * 15
+        break
+        
+      case 'visible':
+        // Gentle floating animation based on progress within visible phase
+        const floatOffset = Math.sin(progress * Math.PI * 2) * 10
+        translateX = 0
+        scale = 1
+        opacity = 1
+        rotate = Math.sin(progress * Math.PI * 4) * 2
+        break
+        
+      case 'exiting':
+        // Slide out to side with bounce
+        const exitProgress = easeInOutCubic(progress)
+        const endOffset = character.side === 'left' ? -200 : 200
+        translateX = endOffset * exitProgress
+        scale = 1 - (0.5 * exitProgress)
+        opacity = 1 - exitProgress
+        rotate = (character.side === 'left' ? -1 : 1) * exitProgress * 15
+        break
+    }
+
     return {
-      top: `${baseY}px`,
-      opacity: isVisible ? 1 : 0,
-      transform: isVisible 
-        ? 'translateX(0) scale(1)' 
-        : character.side === 'left' 
-          ? 'translateX(-150%) scale(0.8)' 
-          : 'translateX(150%) scale(0.8)',
-      transition: 'all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)',
-      animationDelay: `${character.bounceDelay}s`
+      opacity,
+      transform: `translateX(${translateX}%) translateY(${state === 'visible' ? Math.sin((progress || 0) * Math.PI * 2) * 10 : 0}px) scale(${scale}) rotate(${rotate}deg)`,
+      pointerEvents: state === 'visible' ? 'auto' as const : 'none' as const,
+      transition: 'none' // We handle animation via JS-driven transforms
     }
   }
 
-  const leftCharacters = characters.filter(c => c.side === 'left')
-  const rightCharacters = characters.filter(c => c.side === 'right')
+  // Fixed vertical positions for characters (centered vertically on screen)
+  const getVerticalPosition = (index: number) => {
+    const positions = ['15%', '25%', '40%', '55%', '70%', '85%']
+    return positions[index] || '50%'
+  }
 
   return (
     <>
-      {/* Fixed Character Container - Characters bounce throughout the entire page */}
+      {/* Fixed Character Container - Characters bounce in/out as user scrolls */}
       <div className="fixed inset-0 pointer-events-none z-30 overflow-hidden">
-        {/* Left Side Characters */}
-        {leftCharacters.map((char) => (
-          <div
-            key={char.id}
-            className="absolute pointer-events-auto character-bounce"
-            style={{
-              ...getCharacterStyle(char),
-              left: isMobile ? '2%' : '5%',
-              maxWidth: isMobile ? '100px' : '180px'
-            }}
-          >
-            <CharacterCard
-              character={char}
-              isVisible={visibleCharacters.has(char.id)}
-              direction="left"
-              onClick={() => handleCharacterClick(char)}
-              bounceDelay={char.bounceDelay}
-            />
-          </div>
-        ))}
-
-        {/* Right Side Characters */}
-        {rightCharacters.map((char) => (
-          <div
-            key={char.id}
-            className="absolute pointer-events-auto character-bounce"
-            style={{
-              ...getCharacterStyle(char),
-              right: isMobile ? '2%' : '5%',
-              maxWidth: isMobile ? '100px' : '180px'
-            }}
-          >
-            <CharacterCard
-              character={char}
-              isVisible={visibleCharacters.has(char.id)}
-              direction="right"
-              onClick={() => handleCharacterClick(char)}
-              bounceDelay={char.bounceDelay}
-            />
-          </div>
-        ))}
+        {characters.map((char, index) => {
+          const charState = characterStates.get(char.id)
+          if (!charState || charState.state === 'hidden') {
+            return null // Don't render hidden characters
+          }
+          
+          return (
+            <div
+              key={char.id}
+              className="absolute pointer-events-auto"
+              style={{
+                ...getCharacterStyle(char, charState),
+                [char.side]: isMobile ? '2%' : '5%',
+                top: getVerticalPosition(index),
+                maxWidth: isMobile ? '120px' : '200px',
+                willChange: 'transform, opacity'
+              }}
+            >
+              <CharacterCard
+                character={char}
+                isVisible={charState.state !== 'hidden'}
+                direction={char.side}
+                onClick={() => handleCharacterClick(char)}
+                bounceDelay={0}
+              />
+            </div>
+          )
+        })}
       </div>
 
       {/* Section Header - Still visible in the flow */}
@@ -241,18 +297,33 @@ export function CharacterShowcase({ scrollY }: CharacterShowcaseProps) {
         </div>
 
         {/* Scroll Progress Indicator */}
-        <div className="flex justify-center gap-2 mt-8">
-          {characters.map((char) => (
-            <div
-              key={char.id}
-              className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                visibleCharacters.has(char.id) 
-                  ? 'bg-terracotta-500 w-6' 
-                  : 'bg-cream-300'
-              }`}
-              title={char.name}
-            />
-          ))}
+        <div className="flex justify-center gap-2 mt-8 flex-wrap max-w-md mx-auto">
+          {characters.map((char) => {
+            const charState = characterStates.get(char.id)
+            const isVisible = charState && charState.state !== 'hidden'
+            const isActive = charState && charState.state === 'visible'
+            
+            return (
+              <div
+                key={char.id}
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  isActive 
+                    ? 'bg-terracotta-500 w-8' 
+                    : isVisible
+                      ? 'bg-terracotta-300 w-6'
+                      : 'bg-cream-300 w-2'
+                }`}
+                title={char.name}
+              />
+            )
+          })}
+        </div>
+        
+        {/* Scroll Progress Percentage */}
+        <div className="text-center mt-4">
+          <span className="text-xs text-cream-500 font-mono">
+            {Math.round(scrollProgress)}% scrolled
+          </span>
         </div>
       </section>
 
@@ -363,39 +434,8 @@ export function CharacterShowcase({ scrollY }: CharacterShowcaseProps) {
         </div>
       )}
 
-      {/* CSS for bounce animation */}
+      {/* CSS for modal animations */}
       <style>{`
-        @keyframes characterBounce {
-          0%, 100% {
-            transform: translateY(0) rotate(-2deg);
-          }
-          25% {
-            transform: translateY(-15px) rotate(2deg);
-          }
-          50% {
-            transform: translateY(-8px) rotate(-1deg);
-          }
-          75% {
-            transform: translateY(-20px) rotate(1deg);
-          }
-        }
-
-        .character-bounce {
-          animation: characterBounce 4s ease-in-out infinite;
-        }
-
-        .character-bounce:nth-child(2n) {
-          animation-duration: 5s;
-        }
-
-        .character-bounce:nth-child(3n) {
-          animation-duration: 3.5s;
-        }
-
-        .character-bounce:nth-child(4n) {
-          animation-duration: 4.5s;
-        }
-
         @keyframes modalIn {
           0% {
             transform: scale(0.9) translateY(20px);
@@ -429,7 +469,7 @@ export function CharacterShowcase({ scrollY }: CharacterShowcaseProps) {
           display: none;
         }
 
-        /* Mobile responsiveness for modal */
+        /* Mobile responsiveness */
         @media (max-width: 768px) {
           .character-bounce {
             animation-duration: 3s !important;
