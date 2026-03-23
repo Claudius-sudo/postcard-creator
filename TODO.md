@@ -60,6 +60,13 @@ Last updated: 2026-03-23
 - [ ] Email notifications for completed postcards
 
 ### Medium Priority
+- [ ] **Meet the Characters Section** - Dedicated area for character images:
+  - Create a "Meet the Characters" section on the page
+  - Display character images in this dedicated area
+  - Allow users to browse and select different characters
+  - Show character details (name, style, description)
+  - Link to character selection for postcard creation
+
 - [ ] **Message Section Redesign** - Fun names, front/inside card split, AI generation:
   - Rename "Your Message" to something fun/playful
   - Split into two sections:
