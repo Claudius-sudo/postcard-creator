@@ -60,6 +60,13 @@ Last updated: 2026-03-23
 - [ ] Email notifications for completed postcards
 
 ### Medium Priority
+- [ ] **5x7 Portrait Card Preview with Scroll Transition**:
+  - Preview window shows 5x7 portrait format card
+  - As user scrolls: transitions from front page view to inner page view
+  - Background stays faded out during this transition
+  - After scrolling past inner page, reveal Print/Purchase options below
+  - Smooth parallax-style card flip/transition effect
+
 - [ ] **Meet the Characters Section** - Dedicated area for character images:
   - Create a "Meet the Characters" section on the page
   - Display character images in this dedicated area
