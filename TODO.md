@@ -60,6 +60,13 @@ Last updated: 2026-03-23
 - [ ] Email notifications for completed postcards
 
 ### Medium Priority
+- [ ] **Scroll-Based Preview Focus** - Progressive fade-out effect:
+  - As user scrolls toward preview image, fade out surrounding elements
+  - At 50% viewport (preview centered), everything except preview is faded out
+  - Continue scrolling to reveal next steps: Print Card or Purchase JPEG
+  - Smooth opacity transitions based on scroll position
+  - Preview image remains sharp and centered throughout
+
 - [ ] **Smart Text Customization System** - Multi-step personalization:
   - Ask user who the card is for (recipient name)
   - If Birthday: ask for age
