@@ -40,9 +40,15 @@ const templates: PostcardTemplate[] = [
 
 interface PostcardEditorProps {
   occasion?: Occasion | null
+  isFocused?: boolean
+  focusProgress?: number
 }
 
-export function PostcardEditor({ occasion }: PostcardEditorProps = {}) {
+export function PostcardEditor({ 
+  occasion, 
+  isFocused = false, 
+  focusProgress = 0 
+}: PostcardEditorProps) {
   const {
     design,
     updateTitle,
@@ -116,10 +122,38 @@ export function PostcardEditor({ occasion }: PostcardEditorProps = {}) {
     }
   }, [])
 
+  // Calculate scale based on focus progress
+  // When focused (focusProgress 0.85-0.95), scale up the preview
+  const getPreviewScale = () => {
+    if (focusProgress < 0.80) return 1
+    if (focusProgress > 0.95) return 1.05
+    // Smooth scale transition
+    return 1 + ((focusProgress - 0.80) / 0.15) * 0.15
+  }
+
+  // Calculate opacity for editor panel during focus
+  const getEditorOpacity = () => {
+    if (focusProgress < 0.75) return 1
+    if (focusProgress > 0.90) return 0
+    // Smooth fade
+    return 1 - ((focusProgress - 0.75) / 0.15)
+  }
+
+  const previewScale = getPreviewScale()
+  const editorOpacity = getEditorOpacity()
+
   return (
     <div className="grid lg:grid-cols-2 gap-8">
-      {/* Editor Panel */}
-      <div className="space-y-6">
+      {/* Editor Panel - Fades out when preview is focused */}
+      <div 
+        className="space-y-6 transition-all duration-500 ease-out"
+        style={{
+          opacity: editorOpacity,
+          filter: `blur(${(1 - editorOpacity) * 8}px)`,
+          pointerEvents: editorOpacity < 0.1 ? 'none' : 'auto',
+          transform: `translateY(${(1 - editorOpacity) * -20}px)`
+        }}
+      >
         {/* Template Selector */}
         <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-soft border border-cream-200">
           <h3 className="font-display text-lg font-semibold text-cream-900 mb-4">
@@ -259,15 +293,34 @@ export function PostcardEditor({ occasion }: PostcardEditorProps = {}) {
         </div>
       </div>
 
-      {/* Preview Panel */}
-      <div className="lg:sticky lg:top-24 h-fit">
-        <h3 className="font-display text-lg font-semibold text-cream-900 mb-4">
+      {/* Preview Panel - Scales up and becomes focal point */}
+      <div 
+        className={`
+          lg:sticky lg:top-24 h-fit
+          transition-all duration-500 ease-out
+          ${isFocused ? 'z-50' : 'z-10'}
+        `}
+        style={{
+          transform: `scale(${previewScale})`,
+          transformOrigin: 'center center'
+        }}
+      >
+        <h3 
+          className="font-display text-lg font-semibold text-cream-900 mb-4 transition-opacity duration-300"
+          style={{ opacity: isFocused ? 0 : 1 }}
+        >
           Preview
         </h3>
         
         <div 
           ref={previewRef}
-          className="rounded-2xl overflow-hidden shadow-warm transition-all duration-300"
+          className={`
+            rounded-2xl overflow-hidden transition-all duration-500
+            ${isFocused 
+              ? 'shadow-[0_25px_80px_-20px_rgba(198,123,92,0.4)]' 
+              : 'shadow-warm'
+            }
+          `}
           style={{ 
             backgroundColor: design.backgroundColor,
             aspectRatio: '3/2'
@@ -324,8 +377,15 @@ export function PostcardEditor({ occasion }: PostcardEditorProps = {}) {
           </div>
         </div>
 
-        {/* Stats */}
-        <div className="mt-6 grid grid-cols-3 gap-3">
+        {/* Stats - Hidden when focused */}
+        <div 
+          className="mt-6 grid grid-cols-3 gap-3 transition-all duration-300"
+          style={{
+            opacity: isFocused ? 0 : 1,
+            transform: isFocused ? 'translateY(10px)' : 'translateY(0)',
+            pointerEvents: isFocused ? 'none' : 'auto'
+          }}
+        >
           <div className="bg-white/60 backdrop-blur-sm rounded-xl p-3 text-center border border-cream-200">
             <p className="text-xl font-semibold text-terracotta-600">{design.title.length}</p>
             <p className="text-xs text-cream-500">Characters</p>
@@ -337,6 +397,26 @@ export function PostcardEditor({ occasion }: PostcardEditorProps = {}) {
           <div className="bg-white/60 backdrop-blur-sm rounded-xl p-3 text-center border border-cream-200">
             <p className="text-xl font-semibold text-terracotta-600">{design.image ? '✓' : '—'}</p>
             <p className="text-xs text-cream-500">Image</p>
+          </div>
+        </div>
+
+        {/* Scroll hint - shown when focused */}
+        <div 
+          className={`
+            mt-6 text-center transition-all duration-500
+            ${isFocused ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}
+          `}
+        >
+          <p className="text-cream-600 text-sm mb-2">Keep scrolling to finalize</p>
+          <div className="animate-bounce">
+            <svg 
+              className="w-6 h-6 mx-auto text-terracotta-500" 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
           </div>
         </div>
       </div>
