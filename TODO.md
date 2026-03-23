@@ -84,9 +84,13 @@ Last updated: 2026-03-23
   - Update UI labels and placeholder text
   - Both sections clearly labeled and editable
 
+- [ ] **Update Character Images** - Replace placeholder characters with uploaded assets:
+  - Switch out current characters in CharacterShowcase.tsx
+  - Use character images uploaded to assets folder
+  - Update character data (names, styles) to match new images
+  - Ensure transparent backgrounds work correctly
+
 - [ ] **Character Card Updates** - Remove signage, fix before/after labels:
-  - Rename "Your Message" to something fun/playful
-  - Split into two sections:
     - **"Picture Side"** - Text that appears on front of postcard
     - **"Inner Side"** - Text that appears inside the card
   - Update UI labels and placeholder text
