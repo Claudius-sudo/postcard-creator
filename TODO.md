@@ -60,6 +60,12 @@ Last updated: 2026-03-23
 - [ ] Email notifications for completed postcards
 
 ### Medium Priority
+- [ ] **Character Card Updates** - Remove signage, fix before/after labels:
+  - Remove "click here" signage from characters
+  - When clicked: Left side shows "Your Photo" (user's uploaded image)
+  - Right side shows "Customized Photo" (AI character version displayed on page)
+  - Update modal labels accordingly
+
 - [ ] **Character Animation Refinement** - Reduce bounce, scroll with page:
   - Less bounce intensity on character entrance/exit
   - Characters should be static at fixed X% positions (left/right)
