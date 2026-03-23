@@ -1,0 +1,326 @@
+{
+  "birthday": {
+    "18": [
+      "Happy 18th birthday {{name}}! Welcome to adulthood — the world is officially yours to explore. May this year bring you freedom, fun, and unforgettable adventures!",
+      "Cheers to 18 years of awesome, {{name}}! You're officially an adult now (but don't worry, you can still act like a kid sometimes). Here's to new beginnings!",
+      "Happy birthday {{name}}! Eighteen looks good on you. May this milestone year be filled with dreams coming true and memories you'll treasure forever.",
+      "Welcome to the 18 club, {{name}}! It's your time to shine, take chances, and make your mark on the world. Happy birthday and enjoy every moment!"
+    ],
+    "21": [
+      "Happy 21st birthday {{name}}! Cheers to legal everything and a future full of possibilities. May your adventures be many and your worries be few!",
+      "Twenty-one and tons of fun — that's you, {{name}}! Wishing you a year of great memories, good company, and dreams that take flight. Happy birthday!",
+      "Happy 21st {{name}}! You're at that perfect age where the world feels wide open. Go explore it, embrace it, and make it yours. Cheers to you!",
+      "Welcome to 21, {{name}}! May this year bring you joy, growth, and plenty of reasons to celebrate. The best is yet to come — happy birthday!"
+    ],
+    "30": [
+      "Happy 30th birthday {{name}}! Welcome to the best decade yet. Here's to more adventures, laughter, and making memories together!",
+      "Thirty, flirty, and thriving — that's you, {{name}}! Wishing you a year of confidence, joy, and everything your heart desires. Happy birthday!",
+      "Happy 30th {{name}}! They say life begins at thirty, and I believe it. May this year bring clarity, happiness, and dreams realized. Cheers to you!",
+      "Three decades of wonderful, {{name}}! You're just getting started. Here's to the next chapter being your best one yet. Happy birthday!"
+    ],
+    "40": [
+      "Happy 40th birthday {{name}}! Forty and fabulous — you've never looked better. Here's to wisdom, joy, and the amazing adventures still ahead!",
+      "Welcome to the fabulous forties, {{name}}! This decade is all about owning who you are and loving every minute. Happy birthday to someone truly special!",
+      "Happy 40th {{name}}! Life doesn't begin at forty — it gets even better. Wishing you a year of laughter, love, and all the good things you deserve.",
+      "Forty looks fantastic on you, {{name}}! May this milestone birthday mark the start of your most fulfilling chapter yet. Cheers to you!"
+    ],
+    "50": [
+      "Happy 50th birthday {{name}}! Half a century of amazing — and you're just getting warmed up. Here's to golden years filled with joy and adventure!",
+      "Fifty and fantastic, {{name}}! You've gathered wisdom, stories, and so much love along the way. Wishing you a birthday as wonderful as you are!",
+      "Happy 50th {{name}}! They call it the golden birthday for a reason — you're shining brighter than ever. May this year be truly spectacular!",
+      "Five decades of incredible you, {{name}}! The world is better with you in it. Here's to celebrating all you've been and all that's yet to come. Happy birthday!"
+    ],
+    "60plus": [
+      "Happy birthday {{name}}! Sixty (and beyond) has never looked so good. Wishing you a year of health, happiness, and all the things that make you smile!",
+      "Cheers to another wonderful year, {{name}}! Your wisdom and warmth inspire everyone around you. May your birthday be filled with love and joy!",
+      "Happy birthday {{name}}! Life's richest blessings come with time, and you prove that every day. Here's to celebrating you and the beautiful life you've built!",
+      "Another trip around the sun, {{name}}, and you're still glowing! Wishing you peace, joy, and all the little moments that make life sweet. Happy birthday!"
+    ],
+    "generic": [
+      "Happy birthday {{name}}! Wishing you a day filled with love, laughter, and all your favorite things. You deserve the very best!",
+      "Cheers to you on your special day, {{name}}! May this year bring you joy, adventure, and everything you've been hoping for. Happy birthday!",
+      "Happy birthday {{name}}! Another year older, another year more wonderful. Here's to celebrating you and the amazing person you are!",
+      "Sending you the biggest birthday wishes, {{name}}! May your day be as bright and beautiful as you make the world for others. Enjoy every moment!"
+    ]
+  },
+  "thankyou": {
+    "general": [
+      "Thank you so much {{name}}! Your kindness and support mean the world to me. I'm so grateful to have you in my life.",
+      "I can't thank you enough, {{name}}. You have a way of making everything better just by being you. So grateful for your thoughtfulness!",
+      "Thank you {{name}} — from the bottom of my heart. Your generosity and warmth never go unnoticed, and I appreciate you more than words can say.",
+      "Feeling incredibly grateful for you, {{name}}. Thank you for being such a wonderful presence in my life. You're truly one of a kind!"
+    ],
+    "gift": [
+      "Thank you for the wonderful gift, {{name}}! You always know just how to make me feel special. I'm so lucky to have you in my life.",
+      "Your gift was perfect, {{name}} — just like your thoughtfulness! Thank you for knowing me so well and for your generous heart.",
+      "I absolutely love my gift, {{name}}! Thank you for being so thoughtful and for making my day extra special. You're the best!",
+      "Thank you {{name}} for the amazing gift! It's not just the present itself, but the love behind it that means so much. Grateful for you!"
+    ],
+    "help": [
+      "Thank you for being there when I needed you most, {{name}}. Your help made all the difference, and I won't forget your kindness.",
+      "I don't know what I would have done without you, {{name}}. Thank you for stepping in and saving the day — you're a true friend!",
+      "Your support meant everything to me, {{name}}. Thank you for lending a hand and for being someone I can always count on.",
+      "Thank you for your help, {{name}}! You turned a stressful situation into a manageable one, and I'm so grateful for your generosity of spirit."
+    ]
+  },
+  "love": {
+    "anniversary": [
+      "Happy anniversary {{name}}! Every day with you is a gift I treasure. Here's to us and all the beautiful moments still to come.",
+      "Another year of loving you, {{name}}, and it only gets better. Thank you for being my partner, my best friend, and my greatest adventure.",
+      "Happy anniversary to my favorite person, {{name}}! Time flies when you're with the one you love. Here's to many more years of happiness together!",
+      "Celebrating us today, {{name}} — the love we share, the memories we've made, and the future we're building. Happy anniversary, my love!"
+    ],
+    "justbecause": [
+      "Just wanted you to know, {{name}}, that you're always on my mind and forever in my heart. Thinking of you and smiling.",
+      "No special occasion needed to tell you {{name}} — you're amazing and I'm so lucky to have you in my life. Just because I love you!",
+      "Hey {{name}}, sending you a little love note to brighten your day. You make my world better just by being in it.",
+      "Thinking of you today {{name}} and feeling so grateful for your love. Sometimes the best reason to say 'I love you' is no reason at all."
+    ],
+    "longdistance": [
+      "Distance means so little when someone means so much, {{name}}. Counting down the days until I can hold you again. Love you always!",
+      "Missing you extra today, {{name}}, but knowing our love bridges any distance. You're worth every mile between us. Can't wait to see you!",
+      "Even far apart, {{name}}, you're always close to my heart. Sending you all my love across the miles until we're together again.",
+      "They say absence makes the heart grow fonder, {{name}} — and my heart is overflowing. Love you more every day, no matter the distance."
+    ],
+    "newrelationship": [
+      "I'm so happy we found each other, {{name}}. Every moment with you feels like the start of something beautiful. Excited for what's ahead!",
+      "Getting to know you has been the best part of my days, {{name}}. Here's to new beginnings and the wonderful journey we're starting together.",
+      "You make me smile like no one else, {{name}}. So grateful our paths crossed and excited to see where this adventure takes us!",
+      "There's something special about us, {{name}} — I can feel it. Thanks for making these early days so magical. Looking forward to more!"
+    ]
+  },
+  "congratulations": {
+    "newjob": [
+      "Congratulations on the new job, {{name}}! They're so lucky to have you. Wishing you success, growth, and lots of fulfillment in this new chapter!",
+      "Cheers to your new adventure, {{name}}! Your hard work paid off and I couldn't be prouder. Here's to new beginnings and big achievements!",
+      "New job, new possibilities, {{name}}! You're going to do amazing things — I believe in you completely. Congratulations and best of luck!",
+      "Way to go {{name}}! Landing this new role is just the beginning. Can't wait to watch you shine and succeed. Congratulations!"
+    ],
+    "promotion": [
+      "Congratulations on your promotion, {{name}}! Your dedication and talent have always been evident. So proud of how far you've come!",
+      "Moving on up, {{name}}! Your hard work truly paid off and you deserve every bit of this success. Cheers to your well-earned promotion!",
+      "So proud of you {{name}}! This promotion is proof that excellence doesn't go unnoticed. Here's to your continued success!",
+      "Congratulations {{name}}! Climbing the ladder looks good on you. Wishing you all the best in your elevated role — you've got this!"
+    ],
+    "graduation": [
+      "Congratulations on your graduation, {{name}}! All those late nights and hard work led to this moment. So proud of what you've accomplished!",
+      "You did it {{name}}! Graduation day is here and the future is yours. Wishing you success in all that comes next. Well done!",
+      "Caps off to you, {{name}}! Graduating is a huge achievement and you should be so proud. Can't wait to see where life takes you next!",
+      "The tassel was worth the hassle, {{name}}! Congratulations on earning your degree — your dedication and perseverance inspire me."
+    ],
+    "newhome": [
+      "Congratulations on your new home, {{name}}! May it be filled with love, laughter, and countless happy memories. Here's to new beginnings!",
+      "Home sweet new home, {{name}}! Wishing you joy as you settle in and make it your own. So excited for this new chapter of your life!",
+      "Cheers to your new place, {{name}}! May your walls be filled with warmth, your rooms with friends, and your heart with happiness.",
+      "Congratulations on the big move, {{name}}! A new home means new memories waiting to be made. Wishing you all the best in your cozy new space!"
+    ],
+    "engagement": [
+      "Congratulations on your engagement, {{name}}! What wonderful news — wishing you both a lifetime of love, laughter, and happily ever after!",
+      "He popped the question, you said yes, and we all said 'finally!' Congratulations {{name}} — so happy for you both!",
+      "Engaged! So thrilled for you {{name}}! May your wedding planning be joyful and your marriage be everything you dream of. Congratulations!",
+      "Love is in the air and rings are on fingers! Congratulations {{name}} on finding your forever person. Wishing you endless happiness!"
+    ],
+    "wedding": [
+      "Congratulations on your wedding, {{name}}! Wishing you both a beautiful journey filled with love, laughter, and endless adventures together.",
+      "Here's to love, laughter, and happily ever after! Congratulations {{name}} — may your marriage be as wonderful as your wedding day!",
+      "To the happy couple — congratulations {{name}}! Today is just the beginning of your greatest adventure. Wishing you a lifetime of joy!",
+      "Married! Congratulations {{name}}! May your days be filled with love and your nights with laughter. Cheers to your beautiful new chapter!"
+    ]
+  },
+  "sympathy": {
+    "loss": [
+      "I'm so sorry for your loss, {{name}}. There are no words to ease your pain, but please know I'm here for you during this difficult time.",
+      "Sending you love and strength, {{name}}, as you navigate this profound loss. You're in my thoughts and I'm here whenever you need me.",
+      "My heart breaks for you, {{name}}. Please accept my deepest condolences. May your cherished memories bring you comfort in the days ahead.",
+      "Thinking of you with sympathy and care, {{name}}. Grief is the price we pay for love, and you loved deeply. I'm here for you always."
+    ],
+    "pet": [
+      "I'm so sorry about {{petName}}, {{name}}. Pets leave paw prints on our hearts that never fade. Sending you comfort during this sad time.",
+      "Losing a furry friend is never easy, {{name}}. {{petName}} was so lucky to have your love. Thinking of you and sending gentle hugs.",
+      "My heart goes out to you, {{name}}. {{petName}} brought so much joy to your life and will be remembered with love always.",
+      "So sorry for the loss of your beloved {{petName}}, {{name}}. The love between you was beautiful and real. Sending you peace and comfort."
+    ],
+    "thinkingofyou": [
+      "Thinking of you during this difficult time, {{name}}. Please know you're not alone — I'm here to listen, support, or just sit with you in silence.",
+      "Sending you strength and love, {{name}}. Life can be so hard sometimes, but you don't have to face it alone. I'm here for you.",
+      "You're in my thoughts, {{name}}. Whatever you're going through, I hope you feel wrapped in love and support. Take care of yourself.",
+      "Just wanted you to know I'm thinking of you, {{name}}. Sometimes life throws us curveballs, but you've got people in your corner. I'm one of them."
+    ]
+  },
+  "getwell": {
+    "illness": [
+      "Get well soon {{name}}! We're all thinking of you and sending healing vibes. Take all the time you need to rest and recover.",
+      "Wishing you a speedy recovery, {{name}}! Your health is the most important thing right now. Rest up and feel better soon!",
+      "Sending you get-well wishes, {{name}}! May each day bring you closer to feeling like yourself again. Take it easy and get plenty of rest!",
+      "Hope you're back on your feet soon, {{name}}! Being sick is no fun, but you're strong and you'll get through this. Thinking of you!"
+    ],
+    "surgery": [
+      "Wishing you a smooth recovery from your surgery, {{name}}! Take it one day at a time and be patient with yourself. You've got this!",
+      "Hope your surgery went well, {{name}}! Now it's time to rest and let your body heal. Sending you strength and positive thoughts.",
+      "Get well soon after your surgery, {{name}}! Recovery takes time, so be kind to yourself. We're all rooting for your full and speedy healing!",
+      "Thinking of you as you recover from surgery, {{name}}. May each day bring less pain and more progress. Wishing you comfort and healing!"
+    ],
+    "mentalhealth": [
+      "Sending you gentle support, {{name}}. Mental health struggles are real and valid. Please be kind to yourself — you matter so much.",
+      "Thinking of you, {{name}}, and hoping you find peace and healing. It's okay to not be okay, and it's brave to take care of your mental health.",
+      "Wishing you strength and self-compassion, {{name}}. Your mental health matters, and I'm here to support you through the tough days.",
+      "Sending love and understanding your way, {{name}}. Taking care of your mind is just as important as your body. You're not alone in this."
+    ]
+  },
+  "holiday": {
+    "christmas": [
+      "Merry Christmas {{name}}! Wishing you a season filled with warmth, joy, and precious moments with the ones you love. Happy holidays!",
+      "Season's greetings {{name}}! May your Christmas be merry and bright, and your New Year filled with hope and happiness.",
+      "Merry Christmas to someone special, {{name}}! Hope your holidays are filled with love, laughter, and all the magic of the season.",
+      "Wishing you a wonderful Christmas, {{name}}! May this festive season bring you peace, joy, and beautiful memories to cherish."
+    ],
+    "newyear": [
+      "Happy New Year {{name}}! Cheers to fresh starts, new adventures, and all the wonderful things heading your way. Let's make it a great one!",
+      "Wishing you a fantastic New Year, {{name}}! May it bring you success, happiness, and everything you've been dreaming of.",
+      "Happy New Year {{name}}! Out with the old, in with the new. Here's to 365 new chances to make amazing memories!",
+      "Cheers to the New Year, {{name}}! May your days be filled with joy, your nights with peace, and your year with endless possibilities."
+    ],
+    "easter": [
+      "Happy Easter {{name}}! Wishing you a joyful spring filled with new beginnings, chocolate eggs, and time with loved ones.",
+      "Hoppy Easter {{name}}! May your basket be full and your heart be light. Enjoy this beautiful season of renewal and hope!",
+      "Wishing you a wonderful Easter, {{name}}! May the joy of spring fill your home and the warmth of the season fill your heart.",
+      "Happy Easter {{name}}! Here's to sunshine, flowers, and all the little joys that make this season so special. Enjoy your celebration!"
+    ],
+    "thanksgiving": [
+      "Happy Thanksgiving {{name}}! So grateful for you and the joy you bring to my life. Wishing you a day filled with love and delicious food!",
+      "Grateful for you this Thanksgiving, {{name}}! May your table be full, your heart be thankful, and your day be blessed.",
+      "Wishing you a wonderful Thanksgiving, {{name}}! Here's to good food, great company, and counting our many blessings together.",
+      "Happy Thanksgiving {{name}}! Thankful for friends like you who make life sweeter. Enjoy every moment of this special day!"
+    ],
+    "generic": [
+      "Happy holidays {{name}}! Wishing you a season filled with warmth, joy, and time with the people who matter most.",
+      "Season's greetings {{name}}! May this special time of year bring you peace, happiness, and beautiful memories.",
+      "Wishing you a wonderful holiday season, {{name}}! Here's to celebrating, relaxing, and enjoying all the magic this time brings.",
+      "Happy holidays to you, {{name}}! May your days be merry and bright, and your heart be light. Enjoy every moment!"
+    ]
+  },
+  "newbaby": {
+    "congratulations": [
+      "Congratulations on your new arrival, {{name}}! Wishing you joy, love, and plenty of sleep (eventually!). Your little one is so lucky to have you.",
+      "Welcome to parenthood, {{name}}! What an exciting adventure you're beginning. Wishing you all the best as you navigate this beautiful new chapter.",
+      "Congratulations on your bundle of joy, {{name}}! May your home be filled with baby giggles, tiny toes, and endless love.",
+      "So happy for you {{name}}! Your new little one has arrived and life will never be the same — in the best possible way. Congratulations!"
+    ],
+    "welcome": [
+      "Welcome to the world, little one! {{name}}, your baby is absolutely precious. Wishing your family a lifetime of love and happiness.",
+      "Hello baby! {{name}}, congratulations on your beautiful new addition. May this little one bring you more joy than you ever imagined.",
+      "Welcome baby and congratulations {{name}}! This tiny human is going to change your world in the most wonderful ways.",
+      "A new star is born! Congratulations {{name}} on your precious little one. Wishing you sleepless nights filled with endless love and wonder."
+    ]
+  },
+  "anniversary": {
+    "1": [
+      "Happy 1st anniversary {{name}}! One year down, forever to go. What a beautiful beginning to your love story!",
+      "Congratulations on your first year of marriage, {{name}}! The paper anniversary — here's to writing many more chapters together.",
+      "One year of wedded bliss, {{name}}! May your love continue to grow stronger with each passing day. Happy anniversary!",
+      "Happy first anniversary {{name}}! From newlyweds to a solid team — what a wonderful year it's been. Here's to many more!"
+    ],
+    "5": [
+      "Happy 5th anniversary {{name}}! Half a decade of love, laughter, and building a beautiful life together. Cheers to you both!",
+      "Five years of wonderful, {{name}}! Your love has only grown stronger with time. Wishing you many more happy years ahead.",
+      "Congratulations on 5 years of marriage, {{name}}! The wooden anniversary — may your roots grow deep and your love stand strong.",
+      "Five years down, a lifetime to go {{name}}! Here's to the beautiful journey you've shared and all that's yet to come. Happy anniversary!"
+    ],
+    "10": [
+      "Happy 10th anniversary {{name}}! A decade of devotion is something truly special. Wishing you continued happiness and love!",
+      "Ten years of marriage, {{name}} — what an incredible milestone! Your love story inspires everyone who knows you. Congratulations!",
+      "A decade of 'I do' and still going strong, {{name}}! Happy tin anniversary — may your bond be as enduring as metal.",
+      "Happy 10th anniversary {{name}}! Ten years of memories, growth, and unwavering love. Here's to the next beautiful decade!"
+    ],
+    "25": [
+      "Happy 25th anniversary {{name}}! A quarter century of love is truly remarkable. Your commitment to each other is beautiful to witness.",
+      "Silver anniversary wishes to you, {{name}}! 25 years of marriage is a testament to true love and dedication. Congratulations!",
+      "Twenty-five years and counting, {{name}}! Your love has stood the test of time. Wishing you many more years of happiness together.",
+      "Happy silver anniversary {{name}}! 25 years of shared dreams, challenges overcome, and love that only grows deeper. Cheers to you both!"
+    ],
+    "50": [
+      "Happy 50th anniversary {{name}}! Half a century of love — what an extraordinary achievement. Your golden bond inspires us all!",
+      "Golden anniversary congratulations, {{name}}! 50 years of marriage is a rare and beautiful treasure. Wishing you continued joy!",
+      "Fifty years of love, {{name}} — that's something truly golden! Your journey together is a testament to enduring devotion.",
+      "Happy 50th anniversary {{name}}! Five decades of memories, and your love still shines as bright as gold. Congratulations on this incredible milestone!"
+    ],
+    "generic": [
+      "Happy anniversary {{name}}! Celebrating another year of your beautiful love story. Wishing you continued happiness together!",
+      "Congratulations on your anniversary, {{name}}! May your love continue to grow stronger with each passing year. Cheers to you both!",
+      "Another year of love to celebrate, {{name}}! Your relationship is an inspiration. Wishing you joy on your special day!",
+      "Happy anniversary {{name}}! Here's to the love you share and the memories you've created. May there be many more years of happiness ahead!"
+    ]
+  },
+  "newhome": {
+    "housewarming": [
+      "Congratulations on your new home, {{name}}! May it be filled with warmth, laughter, and countless happy memories. Welcome home!",
+      "Home sweet home! Wishing you all the best as you settle into your new place, {{name}}. May every room bring you joy!",
+      "Cheers to your new address, {{name}}! May your walls be filled with love and your rooms with friends. Happy housewarming!",
+      "Welcome to your new nest, {{name}}! Wishing you comfort, happiness, and many wonderful moments in your beautiful new space."
+    ],
+    "moving": [
+      "Good luck with the move, {{name}}! New places bring new adventures. Wishing you a smooth transition and exciting beginnings!",
+      "Here's to new beginnings in your new place, {{name}}! May your move be stress-free and your new home be everything you hoped for.",
+      "Moving on up, {{name}}! Wishing you all the best as you settle into your new space. Here's to fresh starts and new memories!",
+      "Congratulations on the move, {{name}}! Boxes and bubble wrap are temporary, but the memories you'll make will last forever."
+    ],
+    "firsthome": [
+      "Congratulations on your first home, {{name}}! This is such an exciting milestone. Wishing you joy as you make it truly yours!",
+      "Your first home — how exciting, {{name}}! May it be the backdrop for countless beautiful memories and dreams come true.",
+      "Welcome to homeownership, {{name}}! Your first place is so special. Wishing you pride, joy, and many happy years in your new home!",
+      "First home vibes, {{name}}! This is just the beginning of your home journey. Enjoy every moment of making it your own!"
+    ]
+  },
+  "graduation": {
+    "highschool": [
+      "Congratulations on your high school graduation, {{name}}! This is just the beginning of your amazing journey. The future is yours!",
+      "You did it {{name}}! High school is behind you and the world is wide open. Wishing you success in all your future adventures!",
+      "Caps off to you, {{name}}! Graduating high school is a huge achievement. So proud of you and excited for what's next!",
+      "Happy graduation {{name}}! These four years shaped you, and now you're ready to soar. Here's to your bright future ahead!"
+    ],
+    "college": [
+      "Congratulations on your college graduation, {{name}}! All that hard work paid off. Can't wait to see where life takes you next!",
+      "Degree earned, dreams ready to chase! Congratulations {{name}} on this incredible achievement. The world better watch out!",
+      "You did it {{name}}! College graduate has a nice ring to it. Wishing you success and happiness in this exciting new chapter!",
+      "Four years, countless memories, one amazing achievement. Congratulations {{name}}! Your future is as bright as your potential."
+    ],
+    "masters": [
+      "Congratulations on your Master's degree, {{name}}! Your dedication and hard work are truly inspiring. Well done on this incredible achievement!",
+      "Master of your craft — that's you, {{name}}! So proud of your advanced degree and all the effort it took. Congratulations!",
+      "The tassel was worth the hassle, {{name}}! Earning your Master's is no small feat. Wishing you great success in your field!",
+      "Higher education, higher achievements! Congratulations {{name}} on your Master's degree. Your expertise will take you far!"
+    ],
+    "phd": [
+      "Dr. {{name}} — congratulations on earning your PhD! What an extraordinary accomplishment. The world of knowledge is richer with your contribution.",
+      "Doctor {{name}} has a wonderful ring to it! Congratulations on this pinnacle of academic achievement. Your perseverance is inspiring!",
+      "PhD complete — you're officially a doctor! Congratulations {{name}} on this incredible milestone. Years of hard work have paid off!",
+      "The highest honor in academia belongs to you now, {{name}}. Congratulations Dr. {{name}} — your expertise will change the world!"
+    ]
+  },
+  "custom": {
+    "generic": [
+      "Thinking of you today, {{name}}! Just wanted to send some good vibes your way and let you know you're appreciated.",
+      "Hey {{name}}! Sending you a little note to brighten your day. Hope life is treating you well and you're smiling often!",
+      "Hello {{name}}! No special occasion — just wanted to reach out and say you're awesome. Keep being your wonderful self!",
+      "Hi {{name}}! Sometimes the best messages are the unexpected ones. Hope this postcard finds you happy and well!"
+    ],
+    "inspirational": [
+      "Believe in yourself, {{name}} — because I certainly do! You have everything it takes to achieve your dreams. Go show the world!",
+      "Hey {{name}}, remember: every expert was once a beginner. Keep going, keep growing, and never stop believing in yourself!",
+      "Sending you encouragement, {{name}}! Tough times don't last, but tough people do. You've got this — I believe in you completely!",
+      "Your potential is limitless, {{name}}! Don't let anyone tell you otherwise. Keep reaching for the stars — you're capable of amazing things!"
+    ],
+    "friendship": [
+      "Just a note to say you're an amazing friend, {{name}}! Thanks for being you and for making life so much brighter.",
+      "Hey {{name}} — friends like you are rare and precious. So grateful our paths crossed. Thanks for being in my life!",
+      "Thinking of you and smiling, {{name}}! True friendship is a gift, and I'm so lucky to have yours. Thanks for everything!",
+      "To my wonderful friend {{name}} — distance and time don't change real friendship. You're always in my heart!"
+    ],
+    "missyou": [
+      "Missing you lots, {{name}}! Life isn't the same without you around. Hope we can catch up soon — you're always in my thoughts!",
+      "Wish you were here, {{name}}! Sending you hugs across the miles. Can't wait until we're together again!",
+      "Hey {{name}}, just wanted you to know I'm thinking of you and missing your presence. Hope to see you again soon!",
+      "The world feels a little smaller when you're not around, {{name}}. Missing you and looking forward to our next reunion!"
+    ]
+  }
+}
