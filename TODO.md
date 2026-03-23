@@ -47,7 +47,7 @@ Last updated: 2026-03-23
 
 ## 🔄 In Progress
 
-- [ ] Focus mode when scrolling to bottom (zoom + fade effect) - **AGENT WORKING**
+- [ ] ~~Focus mode when scrolling to bottom (zoom + fade effect)~~ - Reverted
 
 ---
 
@@ -60,6 +60,7 @@ Last updated: 2026-03-23
 - [ ] Email notifications for completed postcards
 
 ### Medium Priority
+- [ ] **Customize postcard text based on occasion** - After selecting occasion, show suggested text templates that can be customized
 - [ ] More postcard templates (holiday, wedding, etc.)
 - [ ] Custom font uploads
 - [ ] Image filters/effects
