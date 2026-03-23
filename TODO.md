@@ -60,7 +60,16 @@ Last updated: 2026-03-23
 - [ ] Email notifications for completed postcards
 
 ### Medium Priority
-- [ ] **Customize postcard text based on occasion** - After selecting occasion, show suggested text templates that can be customized
+- [ ] **Smart Text Customization System** - Multi-step personalization:
+  - Ask user who the card is for (recipient name)
+  - If Birthday: ask for age
+  - Generate personalized messages using recipient name
+  - Examples: "Happy birthday Natalie, here's to many more wonderful years with you!" or "Get well soon Sarah, we're all thinking about you"
+  - Show 3-4 message options per occasion
+  - Insert selected message as placeholder in editable text field
+  - Allow user to freely edit/append to the text
+  - Bottom right: "Revert to standard message" button
+  - Preserve user's edits unless they explicitly revert
 - [ ] More postcard templates (holiday, wedding, etc.)
 - [ ] Custom font uploads
 - [ ] Image filters/effects
