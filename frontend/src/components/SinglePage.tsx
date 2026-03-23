@@ -109,7 +109,7 @@ export function SinglePage() {
       </section>
 
       {/* Character Showcase - Characters slide in from sides */}
-      <CharacterShowcase scrollY={scrollY} />
+      <CharacterShowcase />
 
       {/* Main Editor Section */}
       <section 

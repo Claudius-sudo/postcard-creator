@@ -9,6 +9,7 @@ interface Character {
   beforeImage: string
   afterImage: string
   side: 'left' | 'right'
+  offsetY: number
   // Visibility window: [enterStart, exitEnd] as percentage of scroll (0-100)
   visibilityWindow: [number, number]
 }
@@ -22,6 +23,7 @@ const characters: Character[] = [
     beforeImage: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop",
     afterImage: "/characters/luna-3d.png",
     side: 'left',
+    offsetY: 15,
     visibilityWindow: [0, 20]
   },
   {
@@ -32,6 +34,7 @@ const characters: Character[] = [
     beforeImage: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
     afterImage: "/characters/kai-anime.png",
     side: 'right',
+    offsetY: 25,
     visibilityWindow: [15, 35]
   },
   {
@@ -42,6 +45,7 @@ const characters: Character[] = [
     beforeImage: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop",
     afterImage: "/characters/milo-watercolor.png",
     side: 'left',
+    offsetY: 40,
     visibilityWindow: [30, 50]
   },
   {
@@ -52,6 +56,7 @@ const characters: Character[] = [
     beforeImage: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop",
     afterImage: "/characters/zara-digital.png",
     side: 'right',
+    offsetY: 55,
     visibilityWindow: [45, 65]
   },
   {
@@ -62,6 +67,7 @@ const characters: Character[] = [
     beforeImage: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop",
     afterImage: "/characters/oliver-pixar.png",
     side: 'left',
+    offsetY: 70,
     visibilityWindow: [60, 80]
   },
   {
@@ -72,6 +78,7 @@ const characters: Character[] = [
     beforeImage: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop",
     afterImage: "/characters/sophie-chibi.png",
     side: 'right',
+    offsetY: 85,
     visibilityWindow: [75, 95]
   }
 ]
@@ -272,7 +279,7 @@ export function CharacterShowcase() {
             >
               <CharacterCard
                 character={char}
-                isVisible={charState.state !== 'hidden'}
+                isVisible={true}
                 direction={char.side}
                 onClick={() => handleCharacterClick(char)}
                 bounceDelay={0}
