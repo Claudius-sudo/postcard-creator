@@ -119,6 +119,8 @@ export const POSTCARD_TEMPLATES: PostcardTemplate[] = [
 export const DEFAULT_DESIGN = {
   title: '',
   message: '',
+  pictureSide: '',
+  innerSide: '',
   image: null as string | null,
   fontFamily: '"Playfair Display", Georgia, serif',
   backgroundColor: '#FDF0EB',

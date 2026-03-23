@@ -38,6 +38,8 @@ export interface PostcardTemplate {
 export interface PostcardDesign {
   title: string
   message: string
+  pictureSide: string
+  innerSide: string
   image: string | null
   fontFamily: string
   backgroundColor: string
