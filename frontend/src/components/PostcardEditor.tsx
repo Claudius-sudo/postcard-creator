@@ -40,14 +40,22 @@ const templates: PostcardTemplate[] = [
 
 interface PostcardEditorProps {
   occasion?: Occasion | null
+  recipientName?: string
+  recipientAge?: number
   isFocused?: boolean
   focusProgress?: number
+  initialMessage?: string
+  onResetPersonalization?: () => void
 }
 
 export function PostcardEditor({ 
   occasion, 
+  recipientName,
+  recipientAge,
   isFocused = false, 
-  focusProgress = 0 
+  focusProgress = 0,
+  initialMessage,
+  onResetPersonalization
 }: PostcardEditorProps) {
   const {
     design,
@@ -59,6 +67,10 @@ export function PostcardEditor({
     applyTemplate,
     resetDesign,
   } = usePostcardDesign({})
+
+  // Track original message for revert functionality
+  const [originalMessage, setOriginalMessage] = useState<string | null>(null)
+  const [hasBeenEdited, setHasBeenEdited] = useState(false)
 
   // Auto-apply template based on occasion
   useEffect(() => {
@@ -91,6 +103,14 @@ export function PostcardEditor({
     }
   }, [occasion, applyTemplate])
 
+  // Set initial message when provided
+  useEffect(() => {
+    if (initialMessage && !originalMessage) {
+      updateMessage(initialMessage)
+      setOriginalMessage(initialMessage)
+    }
+  }, [initialMessage, originalMessage, updateMessage])
+
   const [isExporting, setIsExporting] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const previewRef = useRef<HTMLDivElement>(null)
@@ -121,6 +141,23 @@ export function PostcardEditor({
       setIsExporting(false)
     }
   }, [])
+
+  // Handle message change with edit tracking
+  const handleMessageChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newMessage = e.target.value
+    updateMessage(newMessage)
+    if (originalMessage && newMessage !== originalMessage) {
+      setHasBeenEdited(true)
+    }
+  }
+
+  // Handle revert to standard message
+  const handleRevert = () => {
+    if (originalMessage) {
+      updateMessage(originalMessage)
+      setHasBeenEdited(false)
+    }
+  }
 
   // Calculate scale based on focus progress
   // When focused (focusProgress 0.85-0.95), scale up the preview
@@ -154,6 +191,45 @@ export function PostcardEditor({
           transform: `translateY(${(1 - editorOpacity) * -20}px)`
         }}
       >
+        {/* Recipient Info Section */}
+        {(recipientName || occasion) && (
+          <div className="bg-terracotta-50 rounded-2xl p-6 border border-terracotta-200 animate-fade-in">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                {occasion && (
+                  <span className="text-3xl">{occasion.icon}</span>
+                )}
+                <div>
+                  {recipientName && (
+                    <h3 className="font-display text-xl font-bold text-terracotta-800">
+                      For {recipientName}
+                      {recipientAge && <span className="text-terracotta-600"> (turning {recipientAge})</span>}
+                    </h3>
+                  )}
+                  {occasion && (
+                    <p className="text-terracotta-600 text-sm">
+                      {occasion.name} • {occasion.description}
+                    </p>
+                  )}
+                </div>
+              </div>
+              {onResetPersonalization && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={onResetPersonalization}
+                  className="text-terracotta-600 hover:text-terracotta-700"
+                >
+                  <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  Change
+                </Button>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Template Selector */}
         <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-soft border border-cream-200">
           <h3 className="font-display text-lg font-semibold text-cream-900 mb-4">
@@ -189,9 +265,16 @@ export function PostcardEditor({
 
         {/* Text Inputs */}
         <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-soft border border-cream-200 space-y-4">
-          <h3 className="font-display text-lg font-semibold text-cream-900">
-            Your Message
-          </h3>
+          <div className="flex items-center justify-between">
+            <h3 className="font-display text-lg font-semibold text-cream-900">
+              Your Message
+            </h3>
+            {hasBeenEdited && originalMessage && (
+              <span className="text-xs text-terracotta-500 bg-terracotta-50 px-2 py-1 rounded-full">
+                Edited
+              </span>
+            )}
+          </div>
           
           <div>
             <label className="block text-sm font-medium text-cream-700 mb-2">
@@ -213,12 +296,34 @@ export function PostcardEditor({
             </label>
             <textarea
               value={design.message}
-              onChange={(e) => updateMessage(e.target.value)}
+              onChange={handleMessageChange}
               placeholder="Write your message..."
               rows={4}
               className="w-full px-4 py-3 rounded-xl border-2 border-cream-200 focus:border-terracotta-400 focus:outline-none transition-colors bg-cream-50/50 resize-none"
               style={{ fontFamily: design.fontFamily }}
             />
+            
+            {/* Revert Button - Bottom Right */}
+            {originalMessage && (
+              <div className="flex justify-end mt-2">
+                <button
+                  onClick={handleRevert}
+                  disabled={!hasBeenEdited}
+                  className={`
+                    text-sm flex items-center gap-1 transition-all duration-200
+                    ${hasBeenEdited 
+                      ? 'text-terracotta-600 hover:text-terracotta-700 hover:underline' 
+                      : 'text-cream-400 cursor-not-allowed'
+                    }
+                  `}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                  </svg>
+                  Revert to Standard Message
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -369,7 +474,7 @@ export function PostcardEditor({
             {!design.title && !design.message && !design.image && (
               <div className="flex-1 flex flex-col items-center justify-center text-cream-400">
                 <svg className="w-16 h-16 mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
                 <p className="text-sm">Your postcard preview will appear here</p>
               </div>

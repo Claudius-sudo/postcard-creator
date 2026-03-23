@@ -98,9 +98,18 @@ export const OCCASIONS: Occasion[] = [
 interface OccasionSelectorProps {
   onSelect: (occasion: Occasion) => void
   selectedOccasion?: Occasion | null
+  showContinue?: boolean
+  onContinue?: () => void
+  onBack?: () => void
 }
 
-export function OccasionSelector({ onSelect, selectedOccasion }: OccasionSelectorProps) {
+export function OccasionSelector({ 
+  onSelect, 
+  selectedOccasion,
+  showContinue = false,
+  onContinue,
+  onBack
+}: OccasionSelectorProps) {
   const [hoveredId, setHoveredId] = useState<string | null>(null)
 
   return (
@@ -190,7 +199,7 @@ export function OccasionSelector({ onSelect, selectedOccasion }: OccasionSelecto
         <div className="mt-8 p-6 bg-terracotta-50 rounded-2xl border border-terracotta-200 animate-fade-in">
           <div className="flex items-center gap-4">
             <span className="text-5xl">{selectedOccasion.icon}</span>
-            <div>
+            <div className="flex-1">
               <h3 className="font-display text-2xl font-bold text-terracotta-800">
                 {selectedOccasion.name}
               </h3>
@@ -198,7 +207,35 @@ export function OccasionSelector({ onSelect, selectedOccasion }: OccasionSelecto
                 {selectedOccasion.description} • Perfect for creating heartfelt messages
               </p>
             </div>
+            
+            {/* Continue Button */}
+            {showContinue && onContinue && (
+              <button
+                onClick={onContinue}
+                className="px-6 py-3 bg-terracotta-500 hover:bg-terracotta-600 text-white font-medium rounded-xl transition-colors shadow-soft flex items-center gap-2"
+              >
+                Continue
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            )}
           </div>
+        </div>
+      )}
+
+      {/* Back Button */}
+      {onBack && (
+        <div className="mt-6 flex justify-center">
+          <button
+            onClick={onBack}
+            className="px-6 py-3 text-cream-600 hover:text-cream-800 font-medium rounded-xl transition-colors flex items-center gap-2"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Back to Occasions
+          </button>
         </div>
       )}
     </div>

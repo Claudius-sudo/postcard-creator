@@ -2,6 +2,8 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { CharacterShowcase } from './CharacterShowcase'
 import { PostcardEditor } from './PostcardEditor'
 import { OccasionSelector, type Occasion } from './OccasionSelector'
+import { RecipientInput } from './RecipientInput'
+import { MessageSelector } from './MessageSelector'
 import { PrintPurchaseOptions } from './PrintPurchaseOptions'
 
 // Scroll phase thresholds (as percentages of the scrollable area)
@@ -13,6 +15,9 @@ const SCROLL_PHASES = {
   OPTIONS_SHOW: 0.95,   // 95%: Print/Purchase options appear
 }
 
+// Flow steps
+type FlowStep = 'occasion' | 'recipient' | 'message' | 'editor'
+
 export function SinglePage() {
   const [scrollY, setScrollY] = useState(0)
   const [showEditor, setShowEditor] = useState(false)
@@ -20,6 +25,12 @@ export function SinglePage() {
   const [scrollProgress, setScrollProgress] = useState(0)
   const [isPreviewFocused, setIsPreviewFocused] = useState(false)
   const [showPurchaseOptions, setShowPurchaseOptions] = useState(false)
+  
+  // Smart Text Customization State
+  const [currentStep, setCurrentStep] = useState<FlowStep>('occasion')
+  const [recipientName, setRecipientName] = useState('')
+  const [recipientAge, setRecipientAge] = useState<number | undefined>(undefined)
+  const [selectedMessage, setSelectedMessage] = useState<string>('')
   
   const containerRef = useRef<HTMLDivElement>(null)
   const editorRef = useRef<HTMLDivElement>(null)
@@ -34,7 +45,6 @@ export function SinglePage() {
 
       if (previewSectionRef.current && containerRef.current) {
         const previewRect = previewSectionRef.current.getBoundingClientRect()
-        const containerHeight = containerRef.current.scrollHeight - window.innerHeight
         
         // Calculate how far we've scrolled relative to when preview enters viewport
         const previewTop = previewRect.top + scrollY
@@ -42,10 +52,9 @@ export function SinglePage() {
         
         // Progress from when preview enters viewport to when it should be centered
         const distanceToCenter = previewTop - viewportCenter
-        const totalDistance = window.innerHeight * 1.5 // Distance needed for full effect
         
         // Normalize progress (0 = preview just entered, 1 = fully centered + options)
-        const progress = Math.max(0, Math.min(1, -distanceToCenter / totalDistance + 0.3))
+        const progress = Math.max(0, Math.min(1, -distanceToCenter / (window.innerHeight * 1.5) + 0.3))
         setScrollProgress(progress)
         
         // Update focus states based on progress
@@ -85,15 +94,101 @@ export function SinglePage() {
     occasionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }, [])
 
+  // Handle occasion selection
   const handleOccasionSelect = useCallback((occasion: Occasion) => {
     setSelectedOccasion(occasion)
+    // Don't auto-scroll - wait for user to click Continue
+  }, [])
+
+  // Handle continue from occasion selection
+  const handleOccasionContinue = useCallback(() => {
+    setCurrentStep('recipient')
+    // Smooth scroll to show the recipient input
     setTimeout(() => {
-      scrollToEditor()
-    }, 500)
+      occasionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 100)
+  }, [])
+
+  // Handle recipient submission
+  const handleRecipientSubmit = useCallback((name: string, age?: number) => {
+    setRecipientName(name)
+    setRecipientAge(age)
+    setCurrentStep('message')
+  }, [])
+
+  // Handle message selection
+  const handleMessageSelect = useCallback((message: string) => {
+    setSelectedMessage(message)
+    setCurrentStep('editor')
+    scrollToEditor()
   }, [scrollToEditor])
+
+  // Handle back navigation
+  const handleBackToOccasion = useCallback(() => {
+    setCurrentStep('occasion')
+    setSelectedOccasion(null)
+    setRecipientName('')
+    setRecipientAge(undefined)
+    setSelectedMessage('')
+  }, [])
+
+  const handleBackToRecipient = useCallback(() => {
+    setCurrentStep('recipient')
+  }, [])
+
+  const handleBackToMessage = useCallback(() => {
+    setCurrentStep('message')
+  }, [])
+
+  // Handle reset personalization
+  const handleResetPersonalization = useCallback(() => {
+    setCurrentStep('occasion')
+    setSelectedOccasion(null)
+    setRecipientName('')
+    setRecipientAge(undefined)
+    setSelectedMessage('')
+    scrollToOccasions()
+  }, [scrollToOccasions])
 
   const fadeOpacity = getFadeOpacity()
   const fadeBlur = getFadeBlur()
+
+  // Render the appropriate content based on current step
+  const renderOccasionSection = () => {
+    switch (currentStep) {
+      case 'occasion':
+        return (
+          <OccasionSelector 
+            onSelect={handleOccasionSelect}
+            selectedOccasion={selectedOccasion}
+            showContinue={!!selectedOccasion}
+            onContinue={handleOccasionContinue}
+          />
+        )
+      case 'recipient':
+        return (
+          <RecipientInput
+            occasion={selectedOccasion}
+            onSubmit={handleRecipientSubmit}
+            onBack={handleBackToOccasion}
+          />
+        )
+      case 'message':
+        return (
+          <MessageSelector
+            occasion={selectedOccasion}
+            recipientName={recipientName}
+            recipientAge={recipientAge}
+            onSelect={handleMessageSelect}
+            onBack={handleBackToRecipient}
+          />
+        )
+      case 'editor':
+        return null // Editor is rendered in its own section
+      default:
+        return null
+    }
+  }
 
   return (
     <div 
@@ -170,24 +265,23 @@ export function SinglePage() {
           <div className="absolute top-1/2 right-20 w-16 h-16 rounded-full bg-golden-200/30 blur-2xl animate-float" style={{ animationDelay: '2s' }} />
         </section>
 
-        {/* Occasion Selector */}
-        <section 
-          ref={occasionRef}
-          className="relative py-8 px-4 bg-white/40 backdrop-blur-sm border-y border-cream-200"
-        >
-          <OccasionSelector 
-            onSelect={handleOccasionSelect}
-            selectedOccasion={selectedOccasion}
-          />
-        </section>
+        {/* Occasion Selector / Recipient Input / Message Selector */}
+        {currentStep !== 'editor' && (
+          <section 
+            ref={occasionRef}
+            className="relative py-8 px-4 bg-white/40 backdrop-blur-sm border-y border-cream-200 min-h-[400px]"
+          >
+            {renderOccasionSection()}
+          </section>
+        )}
 
-        {/* Character Showcase */}
-        <CharacterShowcase />
+        {/* Character Showcase - Only show before editor */}
+        {currentStep !== 'editor' && <CharacterShowcase />}
 
         {/* Main Editor Section */}
         <section 
           ref={editorRef}
-          className="relative py-16 px-4"
+          className={`relative py-16 px-4 ${currentStep === 'editor' ? 'animate-fade-in' : ''}`}
         >
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
@@ -196,18 +290,35 @@ export function SinglePage() {
               </h2>
               <p className="text-cream-600 max-w-lg mx-auto">
                 {selectedOccasion 
-                  ? `Create a beautiful ${selectedOccasion.name.toLowerCase()} postcard with personalized touches.`
+                  ? `Create a beautiful ${selectedOccasion.name.toLowerCase()} postcard for ${recipientName}.`
                   : 'Use the editor below to create your masterpiece. Add photos, customize text, and make it uniquely yours.'
                 }
               </p>
+              
+              {/* Back Button when in editor */}
+              {currentStep === 'editor' && (
+                <button
+                  onClick={handleBackToMessage}
+                  className="mt-4 inline-flex items-center gap-2 text-terracotta-600 hover:text-terracotta-700 font-medium transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                  Back to Message Selection
+                </button>
+              )}
             </div>
 
             {/* Editor with Preview Focus Support */}
             <div ref={previewSectionRef}>
               <PostcardEditor 
-                occasion={selectedOccasion} 
+                occasion={selectedOccasion}
+                recipientName={recipientName}
+                recipientAge={recipientAge}
                 isFocused={isPreviewFocused}
                 focusProgress={scrollProgress}
+                initialMessage={selectedMessage}
+                onResetPersonalization={handleResetPersonalization}
               />
             </div>
           </div>
