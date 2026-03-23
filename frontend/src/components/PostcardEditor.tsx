@@ -1,7 +1,8 @@
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import { usePostcardDesign } from '../hooks/usePostcardDesign'
 import { Button } from './ui/Button'
 import type { PostcardTemplate } from '../types'
+import type { Occasion } from './OccasionSelector'
 
 // Template options
 const templates: PostcardTemplate[] = [
@@ -37,7 +38,11 @@ const templates: PostcardTemplate[] = [
   }
 ]
 
-export function PostcardEditor() {
+interface PostcardEditorProps {
+  occasion?: Occasion | null
+}
+
+export function PostcardEditor({ occasion }: PostcardEditorProps = {}) {
   const {
     design,
     updateTitle,
@@ -48,6 +53,37 @@ export function PostcardEditor() {
     applyTemplate,
     resetDesign,
   } = usePostcardDesign({})
+
+  // Auto-apply template based on occasion
+  useEffect(() => {
+    if (occasion) {
+      // Map occasion to template
+      const templateMap: Record<string, string> = {
+        'birthday': 'nature-1',
+        'thankyou': 'minimal-1',
+        'love': 'nature-1',
+        'congrats': 'nature-1',
+        'sympathy': 'minimal-1',
+        'holiday': 'vintage-1',
+        'getwell': 'nature-1',
+        'anniversary': 'vintage-1',
+        'newbaby': 'nature-1',
+        'newhome': 'minimal-1',
+        'graduation': 'nature-1',
+        'custom': 'minimal-1'
+      }
+      const templateId = templateMap[occasion.id] || 'nature-1'
+      const template = templates.find(t => t.id === templateId)
+      if (template) {
+        applyTemplate(template.id, {
+          backgroundColor: template.backgroundColor,
+          textColor: template.textColor,
+          accentColor: template.accentColor,
+          fontFamily: template.fontFamily,
+        })
+      }
+    }
+  }, [occasion, applyTemplate])
 
   const [isExporting, setIsExporting] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
