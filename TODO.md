@@ -60,6 +60,14 @@ Last updated: 2026-03-23
 - [ ] Email notifications for completed postcards
 
 ### Medium Priority
+- [ ] **Character Animation Refinement** - Reduce bounce, scroll with page:
+  - Less bounce intensity on character entrance/exit
+  - Characters should be static at fixed X% positions (left/right)
+  - As user scrolls, characters move UP the screen with the scroll
+  - Bounce in at their scroll threshold, then scroll normally with page
+  - Bounce out when passing their exit threshold
+  - More natural parallax effect rather than fixed overlay
+
 - [ ] **Scroll-Based Preview Focus** - Progressive fade-out effect:
   - As user scrolls toward preview image, fade out surrounding elements
   - At 50% viewport (preview centered), everything except preview is faded out
