@@ -176,29 +176,20 @@ export function CharacterShowcase() {
   const getCharacterStyle = (character: Character, charState: CharacterState | undefined) => {
     if (!charState || charState.state === 'hidden') {
       return {
-        opacity: 0,
-        transform: character.side === 'left' 
-          ? 'translateX(-200%) scale(0.5)' 
-          : 'translateX(200%) scale(0.5)',
+        opacity: 0.3,
+        transform: character.side === 'left'
+          ? 'translateX(-100%) scale(0.85)'
+          : 'translateX(100%) scale(0.85)',
         pointerEvents: 'none' as const
       }
     }
 
     const { state, progress } = charState
     
-    // Easing function for smooth bounce
-    const easeOutBounce = (t: number) => {
-      const n1 = 7.5625
-      const d1 = 2.75
-      if (t < 1 / d1) {
-        return n1 * t * t
-      } else if (t < 2 / d1) {
-        return n1 * (t -= 1.5 / d1) * t + 0.75
-      } else if (t < 2.5 / d1) {
-        return n1 * (t -= 2.25 / d1) * t + 0.9375
-      } else {
-        return n1 * (t -= 2.625 / d1) * t + 0.984375
-      }
+    // Subtle easing function - reduced bounce for natural parallax
+    const easeOutSmooth = (t: number) => {
+      // Gentle ease out with minimal overshoot
+      return 1 - Math.pow(1 - t, 3)
     }
 
     const easeInOutCubic = (t: number) => {
@@ -212,32 +203,32 @@ export function CharacterShowcase() {
 
     switch (state) {
       case 'entering':
-        // Slide in from side with bounce
-        const enterProgress = easeOutBounce(progress)
-        const startOffset = character.side === 'left' ? -200 : 200
+        // Subtle slide in from side - reduced intensity
+        const enterProgress = easeOutSmooth(progress)
+        const startOffset = character.side === 'left' ? -100 : 100
         translateX = startOffset * (1 - enterProgress)
-        scale = 0.5 + (0.5 * enterProgress)
-        opacity = progress
-        rotate = (character.side === 'left' ? -1 : 1) * (1 - enterProgress) * 15
+        scale = 0.85 + (0.15 * enterProgress)
+        opacity = 0.3 + (0.7 * progress)
+        rotate = (character.side === 'left' ? -1 : 1) * (1 - enterProgress) * 5
         break
         
       case 'visible':
-        // Gentle floating animation based on progress within visible phase
-        const floatOffset = Math.sin(progress * Math.PI * 2) * 10
+        // Very subtle floating - natural parallax feel
+        const floatOffset = Math.sin(progress * Math.PI * 2) * 5
         translateX = 0
         scale = 1
         opacity = 1
-        rotate = Math.sin(progress * Math.PI * 4) * 2
+        rotate = Math.sin(progress * Math.PI * 2) * 1
         break
         
       case 'exiting':
-        // Slide out to side with bounce
+        // Subtle slide out - reduced intensity
         const exitProgress = easeInOutCubic(progress)
-        const endOffset = character.side === 'left' ? -200 : 200
+        const endOffset = character.side === 'left' ? -100 : 100
         translateX = endOffset * exitProgress
-        scale = 1 - (0.5 * exitProgress)
-        opacity = 1 - exitProgress
-        rotate = (character.side === 'left' ? -1 : 1) * exitProgress * 15
+        scale = 1 - (0.15 * exitProgress)
+        opacity = 1 - (exitProgress * 0.7)
+        rotate = (character.side === 'left' ? -1 : 1) * exitProgress * 5
         break
     }
 
@@ -261,16 +252,15 @@ export function CharacterShowcase() {
       <div className="fixed inset-0 pointer-events-none z-30 overflow-hidden">
         {characters.map((char, index) => {
           const charState = characterStates.get(char.id)
-          if (!charState || charState.state === 'hidden') {
-            return null // Don't render hidden characters
-          }
-          
+          // Always render characters - just apply different styles based on state
+          const style = getCharacterStyle(char, charState)
+
           return (
             <div
               key={char.id}
               className="absolute pointer-events-auto"
               style={{
-                ...getCharacterStyle(char, charState),
+                ...style,
                 [char.side]: isMobile ? '2%' : '5%',
                 top: getVerticalPosition(index),
                 maxWidth: isMobile ? '120px' : '200px',

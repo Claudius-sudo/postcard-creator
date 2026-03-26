@@ -6,13 +6,14 @@ import { RecipientInput } from './RecipientInput'
 import { MessageSelector } from './MessageSelector'
 import { PrintPurchaseOptions } from './PrintPurchaseOptions'
 
-// Scroll phase thresholds (as percentages of the scrollable area)
+// Scroll phase thresholds for scroll-based preview focus effect
+// These represent how centered the preview is in the viewport (0 = entering, 1 = centered/past)
 const SCROLL_PHASES = {
-  NORMAL: 0.70,      // 0-70%: Normal view
-  FADE_START: 0.70,  // 70%: Elements start fading
-  FADE_END: 0.85,    // 85%: Elements fully faded
-  PREVIEW_CENTER: 0.90, // 90%: Preview centered and scaled
-  OPTIONS_SHOW: 0.95,   // 95%: Print/Purchase options appear
+  NORMAL: 0.30,      // 0-30%: Normal view, no fading
+  FADE_START: 0.30,  // 30%: Elements start fading as preview approaches center
+  FADE_END: 0.50,    // 50%: Preview is centered, everything else fully faded
+  FOCUS_HOLD: 0.70,  // 50-70%: Preview stays focused, ready for next section
+  OPTIONS_SHOW: 0.70, // 70%: Print/Purchase options start appearing
 }
 
 // Flow steps
@@ -37,29 +38,33 @@ export function SinglePage() {
   const occasionRef = useRef<HTMLDivElement>(null)
   const previewSectionRef = useRef<HTMLDivElement>(null)
 
-  // Calculate scroll progress relative to the preview section
+  // Calculate scroll progress based on preview position in viewport
+  // This creates the scroll-based focus effect where surrounding elements fade as preview centers
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY
       setScrollY(scrollY)
 
-      if (previewSectionRef.current && containerRef.current) {
+      if (previewSectionRef.current) {
         const previewRect = previewSectionRef.current.getBoundingClientRect()
+        const viewportHeight = window.innerHeight
+        const viewportCenter = viewportHeight / 2
+        const previewCenter = previewRect.top + previewRect.height / 2
         
-        // Calculate how far we've scrolled relative to when preview enters viewport
-        const previewTop = previewRect.top + scrollY
-        const viewportCenter = scrollY + window.innerHeight / 2
+        // Calculate how close preview is to viewport center (0 = far, 1 = centered)
+        // Distance from viewport center, normalized by viewport height
+        const distanceFromCenter = Math.abs(previewCenter - viewportCenter)
+        const maxDistance = viewportHeight * 0.8 // Distance at which effect is fully active
         
-        // Progress from when preview enters viewport to when it should be centered
-        const distanceToCenter = previewTop - viewportCenter
-        
-        // Normalize progress (0 = preview just entered, 1 = fully centered + options)
-        const progress = Math.max(0, Math.min(1, -distanceToCenter / (window.innerHeight * 1.5) + 0.3))
+        // Progress: 0 = preview entering viewport, 0.5 = centered, 1 = scrolled past
+        const progress = Math.max(0, Math.min(1, 1 - (distanceFromCenter / maxDistance)))
         setScrollProgress(progress)
         
         // Update focus states based on progress
-        setIsPreviewFocused(progress > 0.75 && progress < 0.95)
-        setShowPurchaseOptions(progress >= 0.95)
+        // Focus is active when preview is near center (30% to 70% progress)
+        setIsPreviewFocused(progress >= SCROLL_PHASES.FADE_START && progress < SCROLL_PHASES.OPTIONS_SHOW)
+        // Show purchase options when scrolled past the preview focus zone
+        setShowPurchaseOptions(progress >= SCROLL_PHASES.OPTIONS_SHOW)
       }
     }
 
@@ -69,20 +74,39 @@ export function SinglePage() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Calculate opacity for fading elements
+  // Calculate opacity for fading elements based on scroll progress
+  // Elements fade out as preview approaches center (30% to 50% progress)
   const getFadeOpacity = () => {
     if (scrollProgress < SCROLL_PHASES.FADE_START) return 1
     if (scrollProgress > SCROLL_PHASES.FADE_END) return 0
-    // Smooth fade between 70% and 85%
+    // Smooth fade between 30% and 50% progress
     return 1 - ((scrollProgress - SCROLL_PHASES.FADE_START) / (SCROLL_PHASES.FADE_END - SCROLL_PHASES.FADE_START))
   }
 
   // Calculate blur amount for fading elements
+  // Blur increases as elements fade out for smoother visual transition
   const getFadeBlur = () => {
     if (scrollProgress < SCROLL_PHASES.FADE_START) return 0
-    if (scrollProgress > SCROLL_PHASES.FADE_END) return 8
-    // Smooth blur increase
-    return ((scrollProgress - SCROLL_PHASES.FADE_START) / (SCROLL_PHASES.FADE_END - SCROLL_PHASES.FADE_START)) * 8
+    if (scrollProgress > SCROLL_PHASES.FADE_END) return 12
+    // Smooth blur increase from 0 to 12px
+    return ((scrollProgress - SCROLL_PHASES.FADE_START) / (SCROLL_PHASES.FADE_END - SCROLL_PHASES.FADE_START)) * 12
+  }
+
+  // Calculate scale for preview when it's centered
+  // Preview subtly scales up when focused for emphasis
+  const getPreviewScale = () => {
+    if (scrollProgress < SCROLL_PHASES.FADE_START) return 1
+    if (scrollProgress > SCROLL_PHASES.FOCUS_HOLD) return 1.02
+    // Smooth scale between fade start and focus hold
+    return 1 + ((scrollProgress - SCROLL_PHASES.FADE_START) / (SCROLL_PHASES.FOCUS_HOLD - SCROLL_PHASES.FADE_START)) * 0.02
+  }
+
+  // Calculate opacity for the purchase options overlay
+  // Options fade in as user scrolls past the preview focus zone
+  const getOptionsOpacity = () => {
+    if (scrollProgress < SCROLL_PHASES.OPTIONS_SHOW) return 0
+    // Fade in over 10% progress after threshold
+    return Math.min(1, (scrollProgress - SCROLL_PHASES.OPTIONS_SHOW) / 0.15)
   }
 
   const scrollToEditor = useCallback(() => {
@@ -152,6 +176,8 @@ export function SinglePage() {
 
   const fadeOpacity = getFadeOpacity()
   const fadeBlur = getFadeBlur()
+  const previewScale = getPreviewScale()
+  const optionsOpacity = getOptionsOpacity()
 
   // Render the appropriate content based on current step
   const renderOccasionSection = () => {
@@ -310,13 +336,21 @@ export function SinglePage() {
             </div>
 
             {/* Editor with Preview Focus Support */}
-            <div ref={previewSectionRef}>
+            <div 
+              ref={previewSectionRef}
+              className="transition-transform duration-500 ease-out"
+              style={{
+                transform: `scale(${previewScale})`,
+                transformOrigin: 'center center'
+              }}
+            >
               <PostcardEditor 
                 occasion={selectedOccasion}
                 recipientName={recipientName}
                 recipientAge={recipientAge}
                 isFocused={isPreviewFocused}
                 focusProgress={scrollProgress}
+                previewScale={previewScale}
                 initialMessage={selectedMessage}
                 onResetPersonalization={handleResetPersonalization}
               />
@@ -359,7 +393,7 @@ export function SinglePage() {
       </div>
 
       {/* Print/Purchase Options Overlay */}
-      <PrintPurchaseOptions isVisible={showPurchaseOptions} />
+      <PrintPurchaseOptions isVisible={showPurchaseOptions} opacity={optionsOpacity} />
     </div>
   )
 }

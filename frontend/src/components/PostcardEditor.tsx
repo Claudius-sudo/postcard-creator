@@ -44,16 +44,18 @@ interface PostcardEditorProps {
   recipientAge?: number
   isFocused?: boolean
   focusProgress?: number
+  previewScale?: number
   initialMessage?: string
   onResetPersonalization?: () => void
 }
 
-export function PostcardEditor({ 
-  occasion, 
+export function PostcardEditor({
+  occasion,
   recipientName,
   recipientAge,
-  isFocused = false, 
+  isFocused = false,
   focusProgress = 0,
+  previewScale = 1,
   initialMessage,
   onResetPersonalization
 }: PostcardEditorProps) {
@@ -159,24 +161,15 @@ export function PostcardEditor({
     }
   }
 
-  // Calculate scale based on focus progress
-  // When focused (focusProgress 0.85-0.95), scale up the preview
-  const getPreviewScale = () => {
-    if (focusProgress < 0.80) return 1
-    if (focusProgress > 0.95) return 1.05
-    // Smooth scale transition
-    return 1 + ((focusProgress - 0.80) / 0.15) * 0.15
-  }
-
   // Calculate opacity for editor panel during focus
+  // Editor fades out as preview approaches center (30% to 50% focusProgress)
   const getEditorOpacity = () => {
-    if (focusProgress < 0.75) return 1
-    if (focusProgress > 0.90) return 0
-    // Smooth fade
-    return 1 - ((focusProgress - 0.75) / 0.15)
+    if (focusProgress < 0.30) return 1
+    if (focusProgress > 0.50) return 0
+    // Smooth fade between 30% and 50% progress
+    return 1 - ((focusProgress - 0.30) / 0.20)
   }
 
-  const previewScale = getPreviewScale()
   const editorOpacity = getEditorOpacity()
 
   return (
@@ -399,7 +392,7 @@ export function PostcardEditor({
       </div>
 
       {/* Preview Panel - Scales up and becomes focal point */}
-      <div 
+      <div
         className={`
           lg:sticky lg:top-24 h-fit
           transition-all duration-500 ease-out
@@ -407,7 +400,8 @@ export function PostcardEditor({
         `}
         style={{
           transform: `scale(${previewScale})`,
-          transformOrigin: 'center center'
+          transformOrigin: 'center center',
+          filter: isFocused ? 'drop-shadow(0 25px 50px rgba(198, 123, 92, 0.25))' : 'none'
         }}
       >
         <h3 
@@ -506,18 +500,18 @@ export function PostcardEditor({
         </div>
 
         {/* Scroll hint - shown when focused */}
-        <div 
+        <div
           className={`
             mt-6 text-center transition-all duration-500
             ${isFocused ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}
           `}
         >
-          <p className="text-cream-600 text-sm mb-2">Keep scrolling to finalize</p>
+          <p className="text-cream-600 text-sm mb-2">Keep scrolling to see options</p>
           <div className="animate-bounce">
-            <svg 
-              className="w-6 h-6 mx-auto text-terracotta-500" 
-              fill="none" 
-              stroke="currentColor" 
+            <svg
+              className="w-6 h-6 mx-auto text-terracotta-500"
+              fill="none"
+              stroke="currentColor"
               viewBox="0 0 24 24"
             >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />

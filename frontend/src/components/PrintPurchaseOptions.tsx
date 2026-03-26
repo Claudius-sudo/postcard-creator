@@ -3,9 +3,10 @@ import { Button } from './ui/Button'
 
 interface PrintPurchaseOptionsProps {
   isVisible: boolean
+  opacity?: number
 }
 
-export function PrintPurchaseOptions({ isVisible }: PrintPurchaseOptionsProps) {
+export function PrintPurchaseOptions({ isVisible, opacity = 1 }: PrintPurchaseOptionsProps) {
   const [isPrinting, setIsPrinting] = useState(false)
   const [isPurchasing, setIsPurchasing] = useState(false)
 
@@ -36,9 +37,10 @@ export function PrintPurchaseOptions({ isVisible }: PrintPurchaseOptionsProps) {
       className={`
         fixed inset-0 z-40 flex items-center justify-center p-4
         transition-all duration-700 ease-out
-        ${isVisible ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}
+        ${isVisible ? 'pointer-events-auto' : 'pointer-events-none'}
       `}
       style={{
+        opacity: isVisible ? opacity : 0,
         background: isVisible 
           ? 'linear-gradient(180deg, rgba(253, 248, 243, 0.98) 0%, rgba(250, 243, 234, 0.98) 100%)' 
           : 'transparent'

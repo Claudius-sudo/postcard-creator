@@ -170,6 +170,13 @@ Last updated: 2026-03-23
 - **Timezone:** AEST (Brisbane)
 - **Heartbeat:** Daily at 7:00 AM
 
+## 🦞 Agent Guidelines
+
+When spawning sub-agents for postcard work, always include:
+1. **Project URL:** http://100.76.223.66:5173 (include in completion summary)
+2. **GitHub:** https://github.com/Claudius-sudo/postcard-creator
+3. **Workspace path:** `/root/.openclaw/workspace/apps/postcard-creator`
+
 ---
 
 ## 🦞 Agent Assignments
